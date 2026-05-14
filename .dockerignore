@@ -1,0 +1,15 @@
+.git
+.gitignore
+.pytest_cache/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+.storage/
+.streamlit/
+models/
+htmlcov/
+.coverage
+.DS_Store
