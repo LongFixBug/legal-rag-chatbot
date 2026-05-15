@@ -65,10 +65,10 @@ class DocumentService:
             DocumentIngestRequest(title=title, content=parsed_text, source=filename, doc_type="uploaded_file")
         )
 
-    async def ingest_directory(self, directory: Path) -> int:
+    async def ingest_directory(self, directory: Path, include_pattern: str = "*") -> int:
         ingested = 0
         existing_sources = {doc.source for doc in await self.metadata_store.list_documents()}
-        for file_path in sorted(directory.glob("*")):
+        for file_path in sorted(directory.glob(include_pattern or "*")):
             if not file_path.is_file() or file_path.suffix.lower() not in {".txt", ".md", ".html", ".htm"}:
                 continue
             if file_path.stem.lower() == "readme":

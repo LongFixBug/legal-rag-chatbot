@@ -40,7 +40,10 @@ async def upload_document(
 
 @router.post("/preload")
 async def preload_documents(services: AppServices = Depends(get_services)) -> dict[str, int]:
-    count = await services.documents.ingest_directory(services.settings.data_dir)
+    count = await services.documents.ingest_directory(
+        services.settings.data_dir,
+        include_pattern=services.settings.preload_include_pattern,
+    )
     return {"documents_ingested": count}
 
 

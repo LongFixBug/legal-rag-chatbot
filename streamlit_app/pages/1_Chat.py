@@ -2,7 +2,7 @@ import streamlit as st
 
 from streamlit_app.utils import ask_question, create_conversation, delete_conversation, get_conversation_history
 
-st.title("Chat pháp lý")
+st.title("Chat nghĩa vụ quân sự")
 
 if "conversation_id" not in st.session_state:
     st.session_state.conversation_id = None
@@ -15,7 +15,10 @@ with right:
         st.session_state.conversation_id = None
         st.rerun()
 
-question = st.text_area("Nhập câu hỏi", placeholder="Ví dụ: Điều 17 Luật Doanh nghiệp quy định gì về quyền thành lập doanh nghiệp?")
+question = st.text_area(
+    "Nhập câu hỏi",
+    placeholder="Ví dụ: Em đang học đại học có được tạm hoãn nghĩa vụ quân sự không?",
+)
 top_k = st.slider("Số chunk truy xuất", min_value=1, max_value=6, value=4)
 
 if st.button("Hỏi") and question.strip():

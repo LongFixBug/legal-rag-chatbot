@@ -36,10 +36,11 @@ services:
       qdrant:
         condition: service_started
     environment:
-      APP_NAME: RAG Legal Assistant
+      APP_NAME: Military Service Law RAG Assistant
       APP_VERSION: 0.2.0
       API_PREFIX: /api
       DATA_DIR: /app/data
+      PRELOAD_INCLUDE_PATTERN: nghia-vu-quan-su*.txt
       STORAGE_DIR: /app/.storage
       PRELOAD_SAMPLE_DATA: "true"
       EMBEDDING_DIMENSION: "1024"

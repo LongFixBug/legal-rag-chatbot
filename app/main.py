@@ -16,7 +16,10 @@ async def lifespan(app: FastAPI):
     services = await build_services()
     app.state.services = services
     if services.settings.preload_sample_data and not await services.documents.list_documents():
-        await services.documents.ingest_directory(services.settings.data_dir)
+        await services.documents.ingest_directory(
+            services.settings.data_dir,
+            include_pattern=services.settings.preload_include_pattern,
+        )
     yield
     await services.close()
 

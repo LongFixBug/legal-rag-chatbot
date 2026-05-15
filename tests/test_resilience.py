@@ -31,7 +31,8 @@ async def test_llm_service_retries_then_falls_back(monkeypatch: pytest.MonkeyPat
     )
 
     assert attempts["count"] == 3
-    assert "Dựa trên các văn bản đã nạp" in answer
+    assert "Câu trả lời ngắn" in answer
+    assert "Luật mẫu - Điều 1" in answer
 
 
 @pytest.mark.asyncio

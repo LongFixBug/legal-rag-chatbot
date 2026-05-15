@@ -13,6 +13,7 @@ Case groups:
 
 Group labels inside the JSON cases are used to cluster scenarios by domain,
 such as `tax.family`, `tax.inheritance`, `tax.prize`, `tax.disability`,
+`military.age`, `military.deferment`, `military.health`, `military.penalty`,
 `business.rights`, and `investment.policy`.
 
 To run only a subset of groups, set `EVAL_GROUPS`:
@@ -46,6 +47,13 @@ By default this scans `data/*.txt` and writes `evals/generated_candidates.json`.
 The generated file is ignored by git on purpose. Review the draft cases, keep the
 ones that represent important domain behavior, then copy those selected cases
 into `evals/legal_quality_cases.json`.
+
+Generated drafts are not loaded by the regression suite by default. To run a
+reviewed generated file explicitly:
+
+```bash
+INCLUDE_GENERATED_EVALS=1 GENERATED_EVAL_CASES_PATH=evals/generated_cases.json uv run pytest tests/test_quality_eval.py -q
+```
 
 To scan one file:
 

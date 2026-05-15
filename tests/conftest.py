@@ -14,6 +14,7 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     monkeypatch.setenv("STORAGE_DIR", str(tmp_path / "storage"))
     monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
     monkeypatch.setenv("PRELOAD_SAMPLE_DATA", "false")
+    monkeypatch.setenv("PRELOAD_INCLUDE_PATTERN", "*")
     get_settings.cache_clear()
 
     data_dir = tmp_path / "data"

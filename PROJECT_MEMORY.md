@@ -180,6 +180,35 @@ Live Docker flow was also verified for:
   `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `46 passed`.
 - Latest full regression baseline after tax-liability handling:
   `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `49 passed`.
+- Fixed the eval-generator workflow so generated drafts are opt-in instead of
+  automatically expanding the default regression suite. `make eval-generate`
+  now writes `evals/generated_candidates.json`; generated suites can be run
+  explicitly with `INCLUDE_GENERATED_EVALS=1`.
+- Improved the local extractive fallback answer format so it starts with a
+  direct `Câu trả lời ngắn` summary before listing the main citations, instead
+  of only dumping retrieved legal chunks.
+- Removed the hardcoded `3 tỷ` wording from inheritance/gift tax answers and
+  normalized RAG query expansion with accent folding.
+- Latest validation after fallback/eval workflow cleanup:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `49 passed`.
+- Optional generated eval validation:
+  `env UV_CACHE_DIR=.uv-cache INCLUDE_GENERATED_EVALS=1 GENERATED_EVAL_CASES_PATH=evals/generated_cases.json uv run pytest tests/test_quality_eval.py -q`
+  passed with `589 passed`.
+- Pivoted the demo scope from broad legal/tax Q&A to a focused Vietnamese
+  military-service-law chatbot. Runtime preload now defaults to
+  `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su*.txt` so Docker/demo loads the
+  military-service corpus first while legacy corpora remain available for
+  regression tests.
+- Added military-service corpus files covering Luật Nghĩa vụ quân sự 2015,
+  Thông tư 105/2023/TT-BQP health/eyesight standards, and the administrative
+  penalty flow from Nghị định 120/2013/NĐ-CP as amended by Nghị định
+  37/2022/NĐ-CP.
+- Added `app/services/military.py` as the direct-answer layer for military
+  service law intents: age, duration, standards, student deferment,
+  deferment/exemption, health/eyesight, exam summons, and penalties.
+- Updated Streamlit and README messaging for the military-service-law demo.
+- Latest validation after the military-service pivot:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `59 passed`.
 
 ## Change Guidance
 

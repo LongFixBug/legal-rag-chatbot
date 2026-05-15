@@ -4,12 +4,12 @@ import argparse
 import json
 import re
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATA_DIR = PROJECT_ROOT / "data"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "evals" / "generated_cases.json"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "evals" / "generated_candidates.json"
 
 ARTICLE_PATTERN = re.compile(r"(?=Điều\s+\d+[A-Za-z0-9-]*[\.:])", re.IGNORECASE)
 ARTICLE_LABEL_PATTERN = re.compile(r"^(Điều\s+\d+[A-Za-z0-9-]*)", re.IGNORECASE)

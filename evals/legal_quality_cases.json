@@ -122,6 +122,29 @@
         "article": "Điều 15",
         "excerpt_contains": "trúng thưởng"
       }
+    },
+    {
+      "id": "military_service_age",
+      "group": "military.age",
+      "question": "bao nhiêu tuổi thì phải đi nghĩa vụ quân sự",
+      "seed_files": ["nghia-vu-quan-su-2015.txt"],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Luật Nghĩa vụ quân sự 78/2015/QH13",
+        "article": "Điều 30",
+        "excerpt_contains": "hết 25 tuổi"
+      }
+    },
+    {
+      "id": "military_service_myopia",
+      "group": "military.health",
+      "question": "cận thị 4 độ có phải đi nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-kham-suc-khoe-105-2023.txt"],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Thông tư 105/2023/TT-BQP",
+        "excerpt_contains": "cận thị từ -4D đến dưới -5D"
+      }
     }
   ],
   "answer": [
@@ -200,6 +223,38 @@
       ],
       "must_include": ["tiền mặt 3 tỷ", "bất động sản", "299.000.000 đồng", "298.000.000 đồng"],
       "must_not_include": ["Chưa đủ dữ liệu để chốt một con số duy nhất", "Chưa có căn cứ"]
+    },
+    {
+      "id": "military_age_answer",
+      "group": "military.age",
+      "question": "bao nhiêu tuổi thì phải đi nghĩa vụ quân sự",
+      "seed_files": ["nghia-vu-quan-su-2015.txt"],
+      "must_include": ["đủ 18 tuổi", "hết 25 tuổi", "hết 27 tuổi", "Điều 30"],
+      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+    },
+    {
+      "id": "military_student_deferment_answer",
+      "group": "military.deferment",
+      "question": "đang học đại học có được tạm hoãn nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-2015.txt"],
+      "must_include": ["tạm hoãn", "một khóa đào tạo", "hết 27 tuổi", "Điều 41"],
+      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+    },
+    {
+      "id": "military_myopia_answer",
+      "group": "military.health",
+      "question": "cận thị 4 độ có phải đi nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-kham-suc-khoe-105-2023.txt"],
+      "must_include": ["không nên kết luận chỉ dựa vào số độ cận", "từ -4D đến dưới -5D", "điểm 5"],
+      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+    },
+    {
+      "id": "military_exam_penalty_answer",
+      "group": "military.penalty",
+      "question": "không đi khám sức khỏe nghĩa vụ quân sự bị phạt bao nhiêu",
+      "seed_files": ["nghia-vu-quan-su-xu-phat-120-2013-37-2022.txt"],
+      "must_include": ["10 đến 12 triệu đồng", "25 đến 35 triệu đồng", "Điều 6"],
+      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
     }
   ],
   "calculation": [

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Protocol
 
 import httpx
@@ -125,12 +126,12 @@ class ExtractiveLLMService:
         if not contexts:
             return "Chưa có căn cứ trong kho dữ liệu để trả lời câu hỏi này. Hãy nạp thêm văn bản pháp luật liên quan."
 
-        lead = "Dựa trên các văn bản đã nạp, tôi tìm được các căn cứ sau:"
-        lines: list[str] = [lead]
+        lines: list[str] = [self._build_short_answer(contexts[0])]
         if history:
             last_user_question = next((item["content"] for item in reversed(history) if item["role"] == "user"), None)
             if last_user_question and last_user_question != question:
-                lines.append(f"- Bối cảnh hội thoại trước đó: {last_user_question}")
+                lines.append(f"Bối cảnh hội thoại trước đó: {last_user_question}")
+        lines.append("Căn cứ chính:")
         seen_articles: set[tuple[str, str | None]] = set()
         for item in contexts[:3]:
             key = (item["title"], item.get("article"))
@@ -139,13 +140,29 @@ class ExtractiveLLMService:
             seen_articles.add(key)
             article_label = item.get("article") or "Đoạn liên quan"
             excerpt = " ".join(item["content"].split())
-            excerpt = excerpt[:220] + "..." if len(excerpt) > 220 else excerpt
+            excerpt = excerpt[:180] + "..." if len(excerpt) > 180 else excerpt
             lines.append(f"- {item['title']} - {article_label}: {excerpt}")
-        lines.append("Kết luận chỉ nên được sử dụng như công cụ tra cứu ban đầu; cần đối chiếu văn bản gốc trước khi áp dụng.")
+        lines.append("Lưu ý: đây là câu trả lời hỗ trợ tra cứu; khi áp dụng thực tế vẫn nên đối chiếu văn bản gốc.")
         return "\n".join(lines)
 
     async def health_check(self) -> dict[str, object]:
         return {"ready": True, "operational": True, "mode": "local_fallback"}
+
+    @staticmethod
+    def _build_short_answer(primary_context: dict) -> str:
+        title = primary_context["title"]
+        article_label = primary_context.get("article") or "đoạn liên quan"
+        summary = ExtractiveLLMService._summarize_context(primary_context["content"])
+        return f"Câu trả lời ngắn: {article_label} của {title} quy định {summary}"
+
+    @staticmethod
+    def _summarize_context(content: str, max_length: int = 320) -> str:
+        compact = " ".join(content.split())
+        compact = re.sub(r"^Điều\s+\d+[A-Za-z0-9-]*[\.:]?\s*", "", compact, flags=re.IGNORECASE)
+        if len(compact) <= max_length:
+            return compact
+        clipped = compact[:max_length].rsplit(" ", 1)[0]
+        return f"{clipped}..."
 
 
 

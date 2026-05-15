@@ -157,7 +157,8 @@ class TaxComputationService:
         if taxable_asset_hint == "taxable_asset":
             lines.append("Nếu đây là tài sản thuộc diện chịu thuế, thuế TNCN tính riêng theo từng lần thừa kế/quà tặng, với thuế suất 10% trên phần vượt ngưỡng.")
         else:
-            lines.append("Nói ngắn gọn: nếu bạn đang nói tới tiền mặt 3 tỷ thì thường không phải trường hợp phải nộp thuế TNCN từ thừa kế.")
+            cash_phrase = f"tiền mặt {self._format_vnd_natural(amount)}" if amount is not None else "tiền mặt"
+            lines.append(f"Nói ngắn gọn: nếu bạn đang nói tới {cash_phrase} thì thường không phải trường hợp phải nộp thuế TNCN từ thừa kế.")
             lines.append("Nếu là bất động sản, chứng khoán, phần vốn góp hoặc tài sản phải đăng ký sở hữu/quyền sử dụng thì có thể thuộc diện chịu thuế.")
 
         if amount is not None:
@@ -374,6 +375,16 @@ class TaxComputationService:
     @staticmethod
     def _format_vnd(amount: int) -> str:
         return f"{amount:,}".replace(",", ".") + " đồng"
+
+    @staticmethod
+    def _format_vnd_natural(amount: int) -> str:
+        if amount % 1_000_000_000 == 0:
+            return f"{amount // 1_000_000_000} tỷ"
+        if amount % 1_000_000 == 0:
+            return f"{amount // 1_000_000} triệu"
+        if amount % 1_000 == 0:
+            return f"{amount // 1_000} nghìn"
+        return TaxComputationService._format_vnd(amount)
 
     @staticmethod
     def _fold_text(text: str) -> str:

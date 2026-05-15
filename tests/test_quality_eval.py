@@ -26,8 +26,10 @@ def _merge_cases(base: dict, extra: dict) -> dict:
 
 def load_eval_cases() -> dict:
     base = _load_json(EVAL_CASES_PATH)
-    if GENERATED_CASES_PATH.exists():
-        extra = _load_json(GENERATED_CASES_PATH)
+    include_generated = os.getenv("INCLUDE_GENERATED_EVALS", "").strip().lower() in {"1", "true", "yes"}
+    generated_path = Path(os.getenv("GENERATED_EVAL_CASES_PATH", GENERATED_CASES_PATH))
+    if include_generated and generated_path.exists():
+        extra = _load_json(generated_path)
         return _merge_cases(base, extra)
     return base
 

@@ -11,6 +11,7 @@ from app.services.citation import CitationService
 from app.services.embedding import EmbeddingService
 from app.services.legal import LegalTextService
 from app.services.llm import LLMService
+from app.services.military import MilitaryQuestionType, MilitaryServiceLawService
 from app.services.tax import TaxComputationService, TaxQuestionType
 
 
@@ -33,6 +34,7 @@ class RagService:
         self.citation_service = citation_service
         self.legal_text_service = legal_text_service
         self.tax_computation_service = TaxComputationService()
+        self.military_service_law_service = MilitaryServiceLawService()
 
     async def chat(self, question: str, top_k: int | None = None, conversation_id: str | None = None) -> ChatResponse:
         normalized_question = self.legal_text_service.normalize_query(question)
@@ -41,9 +43,17 @@ class RagService:
         history_records = await self.metadata_store.list_chat_history(conversation.id, limit=self.settings.max_history_messages)
         history = [record.to_dict() for record in history_records]
         retrieved = await self._retrieve(normalized_question, limit)
-        answer = self.tax_computation_service.answer_tax_question(normalized_question, retrieved)
+        military_question_type = self.military_service_law_service.classify_question(normalized_question)
+        answer = self.military_service_law_service.answer_question(normalized_question, retrieved)
         question_type = self.tax_computation_service.classify_question(normalized_question)
-        citations_source = self._filter_tax_retrieved_items(retrieved, question_type, answer is not None)
+        if answer is None:
+            answer = self.tax_computation_service.answer_tax_question(normalized_question, retrieved)
+        citations_source = self._filter_direct_answer_retrieved_items(
+            retrieved,
+            question_type,
+            military_question_type,
+            answer is not None,
+        )
         if answer is None:
             answer = await self.llm_service.answer(normalized_question, retrieved, history)
         validation_warnings = self.citation_service.validate_answer_citations(answer, retrieved)
@@ -128,7 +138,8 @@ class RagService:
 
     async def _retrieve(self, question: str, limit: int, article_filter: str | None = None) -> list[dict]:
         question_type = self.tax_computation_service.classify_question(question)
-        expanded_questions = self._expand_queries(question, question_type)
+        military_question_type = self.military_service_law_service.classify_question(question)
+        expanded_questions = self._expand_queries(question, question_type, military_question_type)
 
         all_results: list[dict] = []
         seen_ids: set[str] = set()
@@ -144,26 +155,45 @@ class RagService:
 
         article_refs = {ref for ref in self.citation_service.extract_references(question) if ref.startswith("Điều ")}
         article_refs = self._add_tax_article_refs(question_type, article_refs)
+        article_refs = self._add_military_article_refs(military_question_type, article_refs)
 
-        merged_results = await self._merge_exact_article_matches(merged_results, article_refs, question_type, article_filter)
+        merged_results = await self._merge_exact_article_matches(
+            merged_results,
+            article_refs,
+            question_type,
+            military_question_type,
+            article_filter,
+        )
         merged_results = await self._merge_prize_winning_matches(merged_results, question_type)
         merged_results = await self._merge_family_deduction_matches(merged_results, question_type)
         merged_results = await self._merge_inheritance_gift_matches(merged_results, question_type)
         merged_results = await self._merge_disability_tax_matches(merged_results, question_type)
         merged_results = await self._merge_tax_liability_matches(merged_results, question_type)
+        merged_results = await self._merge_military_service_matches(merged_results, military_question_type)
         merged_results = await self._merge_topical_title_matches(merged_results, question)
 
-        reranked = self._rerank(merged_results, question, article_filter, article_refs, question_type)
+        reranked = self._rerank(merged_results, question, article_filter, article_refs, question_type, military_question_type)
         selected = reranked[:limit]
         if question_type == TaxQuestionType.prize_winning:
             selected = self._ensure_prize_threshold_coverage(selected, reranked, limit)
         return selected
 
     @staticmethod
-    def _expand_queries(question: str, question_type: TaxQuestionType) -> list[str]:
+    def _expand_queries(
+        question: str,
+        question_type: TaxQuestionType,
+        military_question_type: MilitaryQuestionType = MilitaryQuestionType.non_military,
+    ) -> list[str]:
         variants = [question]
-        folded = question.lower()
-        if question_type == TaxQuestionType.non_tax and not any(term in folded for term in ("điều", "dieu", "quy định")):
+        folded = TaxComputationService._fold_text(question)
+        if military_question_type != MilitaryQuestionType.non_military:
+            variants.append(f"{question} luật nghĩa vụ quân sự nhập ngũ")
+            if military_question_type in {MilitaryQuestionType.health, MilitaryQuestionType.eyesight}:
+                variants.append(f"{question} Thông tư 105/2023/TT-BQP khám sức khỏe nghĩa vụ quân sự")
+            if military_question_type == MilitaryQuestionType.penalty:
+                variants.append(f"{question} Nghị định 120/2013/NĐ-CP Nghị định 37/2022/NĐ-CP xử phạt")
+            return variants[:3]
+        if question_type == TaxQuestionType.non_tax and not any(term in folded for term in ("dieu", "quy dinh")):
             variants.append(f"quy định pháp luật về {question}")
         if question_type != TaxQuestionType.non_tax and "thue" not in folded:
             variants.append(f"{question} thuế TNCN")
@@ -184,13 +214,33 @@ class RagService:
             article_refs.update({"Điều 2", "Điều 3", "Điều 8", "Điều 10", "Điều 21"})
         return article_refs
 
+    def _add_military_article_refs(self, question_type: MilitaryQuestionType, article_refs: set[str]) -> set[str]:
+        for article in self.military_service_law_service.suggested_articles(question_type):
+            if article.startswith("Điều "):
+                article_refs.add(article)
+        return article_refs
+
     # ------------------------------------------------------------------ #
     #  Filtering retrieved items for citation display
     # ------------------------------------------------------------------ #
 
-    def _filter_tax_retrieved_items(self, retrieved: list[dict], question_type: TaxQuestionType, answered_by_tax_service: bool) -> list[dict]:
-        if not answered_by_tax_service:
+    def _filter_direct_answer_retrieved_items(
+        self,
+        retrieved: list[dict],
+        question_type: TaxQuestionType,
+        military_question_type: MilitaryQuestionType,
+        answered_directly: bool,
+    ) -> list[dict]:
+        if not answered_directly:
             return retrieved
+
+        if military_question_type != MilitaryQuestionType.non_military:
+            filtered = [
+                item
+                for item in retrieved
+                if self.military_service_law_service.is_relevant_context(item, military_question_type)
+            ]
+            return filtered or retrieved
 
         if question_type == TaxQuestionType.inheritance_gift:
             filtered = [item for item in retrieved if self._has_folded_term(item, ("thua ke", "qua tang"))]
@@ -230,6 +280,7 @@ class RagService:
         article_filter: str | None,
         article_refs: set[str],
         question_type: TaxQuestionType,
+        military_question_type: MilitaryQuestionType = MilitaryQuestionType.non_military,
     ) -> list[dict]:
         reranked: list[dict] = []
         for item in search_results:
@@ -254,7 +305,7 @@ class RagService:
 
             for flag, boost in (("_prize_winning_match", 1.0), ("_family_deduction_match", 1.5),
                                 ("_inheritance_gift_match", 1.5), ("_disability_tax_match", 1.5),
-                                ("_tax_liability_match", 1.5)):
+                                ("_tax_liability_match", 1.5), ("_military_service_match", 1.5)):
                 if payload.get(flag):
                     score += boost
 
@@ -264,6 +315,12 @@ class RagService:
                     score += 2.0
                 if "Luật Thuế thu nhập cá nhân 109/2025/QH15" in payload.get("title", ""):
                     score += 0.5
+
+            if (
+                military_question_type != MilitaryQuestionType.non_military
+                and self.military_service_law_service.is_relevant_context(payload, military_question_type)
+            ):
+                score += 1.75
 
             reranked.append({
                 "id": item["id"],
@@ -284,7 +341,9 @@ class RagService:
 
     async def _merge_exact_article_matches(
         self, search_results: list[dict], article_refs: set[str],
-        question_type: TaxQuestionType, article_filter: str | None = None,
+        question_type: TaxQuestionType,
+        military_question_type: MilitaryQuestionType = MilitaryQuestionType.non_military,
+        article_filter: str | None = None,
     ) -> list[dict]:
         target_articles = set(article_refs)
         if article_filter:
@@ -322,6 +381,14 @@ class RagService:
                     "content": chunk.content,
                 }
                 if not self._is_tax_liability_context(candidate):
+                    continue
+            if military_question_type != MilitaryQuestionType.non_military:
+                candidate = {
+                    "title": document.title if document else chunk.document_id,
+                    "article": chunk.article,
+                    "content": chunk.content,
+                }
+                if not self.military_service_law_service.is_relevant_context(candidate, military_question_type):
                     continue
 
             search_results.append({
@@ -446,6 +513,38 @@ class RagService:
                     "article": chunk.article, "clause": chunk.clause,
                     "content": chunk.content, "citations": chunk.citations,
                     "_tax_liability_match": True,
+                },
+            })
+            known_ids.add(chunk.id)
+        return search_results
+
+    async def _merge_military_service_matches(
+        self,
+        search_results: list[dict],
+        question_type: MilitaryQuestionType,
+    ) -> list[dict]:
+        if question_type == MilitaryQuestionType.non_military:
+            return search_results
+        known_ids = {item["id"] for item in search_results}
+        documents = {item.id: item for item in await self.metadata_store.list_documents()}
+        for chunk in await self.metadata_store.list_chunks():
+            if chunk.id in known_ids:
+                continue
+            document = documents.get(chunk.document_id)
+            item = {"title": document.title if document else chunk.document_id, "article": chunk.article, "content": chunk.content}
+            if not self.military_service_law_service.is_relevant_context(item, question_type):
+                continue
+            search_results.append({
+                "id": chunk.id,
+                "score": 0.0,
+                "payload": {
+                    "document_id": chunk.document_id,
+                    "title": document.title if document else chunk.document_id,
+                    "article": chunk.article,
+                    "clause": chunk.clause,
+                    "content": chunk.content,
+                    "citations": chunk.citations,
+                    "_military_service_match": True,
                 },
             })
             known_ids.add(chunk.id)
