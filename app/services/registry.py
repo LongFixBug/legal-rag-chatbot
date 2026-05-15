@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from fastapi import Request
 
@@ -17,17 +18,27 @@ from app.services.parser import DocumentParserService
 from app.services.rag import RagService
 
 
-@dataclass(slots=True)
+@dataclass
 class AppServices:
     settings: Settings
     metadata_store: MetadataStore
     vector_store: VectorStore
+    embedding_service: Any
+    llm_service: Any
     documents: DocumentService
     rag: RagService
 
     async def close(self) -> None:
         await self.vector_store.close()
         await self.metadata_store.close()
+
+    async def readiness_summary(self) -> dict[str, dict[str, object]]:
+        return {
+            "metadata_store": await self.metadata_store.health_check(),
+            "vector_store": await self.vector_store.health_check(),
+            "llm": await self.llm_service.health_check(),
+            "embedding": await self.embedding_service.health_check(),
+        }
 
 
 async def build_services() -> AppServices:
@@ -69,6 +80,8 @@ async def build_services() -> AppServices:
         settings=settings,
         metadata_store=metadata_store,
         vector_store=vector_store,
+        embedding_service=embedding_service,
+        llm_service=llm_service,
         documents=document_service,
         rag=rag_service,
     )

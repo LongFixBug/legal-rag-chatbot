@@ -25,6 +25,9 @@ class LocalMetadataStore(MetadataStore):
     async def close(self) -> None:
         return None
 
+    async def health_check(self) -> dict:
+        return {"ready": self._path.exists(), "mode": "local", "path": str(self._path)}
+
     def _read(self) -> dict:
         return json.loads(self._path.read_text(encoding="utf-8"))
 
@@ -198,6 +201,14 @@ class PostgresMetadataStore(MetadataStore):
 
     async def close(self) -> None:
         await self.engine.dispose()
+
+    async def health_check(self) -> dict:
+        try:
+            async with self.session_factory() as session:
+                await session.execute(text("SELECT 1"))
+            return {"ready": True, "mode": "postgres"}
+        except Exception as exc:
+            return {"ready": False, "mode": "postgres", "error": str(exc)}
 
     async def list_documents(self) -> list[DocumentRecord]:
         async with self.session_factory() as session:

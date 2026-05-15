@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 def test_ingest_list_delete_document(client):
     ingest = client.post(
         "/api/documents/ingest",
@@ -38,3 +41,23 @@ def test_upload_html_document(client):
     payload = response.json()
     assert payload["document"]["doc_type"] == "uploaded_file"
     assert payload["chunks_indexed"] >= 1
+
+
+def test_preload_skips_readme_files(client):
+    data_dir = Path(client.app.state.services.settings.data_dir)
+    (data_dir / "README.md").write_text("Hướng dẫn nội bộ, không phải văn bản pháp luật.", encoding="utf-8")
+    (data_dir / "tax-law.txt").write_text(
+        "Nghị quyết 110/2025/UBTVQH15 điều chỉnh mức giảm trừ gia cảnh\n\nĐiều 1. Mức giảm trừ gia cảnh.",
+        encoding="utf-8",
+    )
+
+    response = client.post("/api/documents/preload")
+    assert response.status_code == 200
+    assert response.json()["documents_ingested"] == 2
+
+    listed = client.get("/api/documents")
+    assert listed.status_code == 200
+    sources = {item["source"] for item in listed.json()}
+    assert "tax-law.txt" not in sources
+    assert str(data_dir / "README.md") not in sources
+    assert str(data_dir / "tax-law.txt") in sources

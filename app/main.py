@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response, status
 
 from app.api.chat import router as chat_router
 from app.api.documents import router as documents_router
@@ -35,3 +35,18 @@ async def root() -> dict[str, str]:
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok", "version": settings.app_version}
+
+
+@app.get("/health/ready")
+async def health_ready(request: Request, response: Response) -> dict[str, object]:
+    checks = await request.app.state.services.readiness_summary()
+    ready = all(bool(item.get("operational", item.get("ready"))) for item in checks.values())
+    degraded = any(not bool(item.get("ready")) for item in checks.values())
+    if not ready:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    return {
+        "status": "ok" if ready and not degraded else "degraded",
+        "version": settings.app_version,
+        "ready": ready,
+        "checks": checks,
+    }

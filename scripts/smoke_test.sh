@@ -43,6 +43,10 @@ log "Checking API health at $API_BASE_URL/health"
 health_response="$(request GET "$API_BASE_URL/health")"
 require_contains "health response" "$health_response" '"status":"ok"'
 
+log "Checking API readiness at $API_BASE_URL/health/ready"
+ready_response="$(request GET "$API_BASE_URL/health/ready")"
+require_contains "readiness response" "$ready_response" '"ready":true'
+
 log "Checking preload endpoint"
 preload_response="$(request POST "$API_BASE_URL$API_PREFIX/documents/preload")"
 require_contains "preload response" "$preload_response" '"documents_ingested"'

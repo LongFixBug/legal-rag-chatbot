@@ -11,12 +11,16 @@ from app.prompts.legal_assistant import SYSTEM_PROMPT
 class LLMService(Protocol):
     async def answer(self, question: str, contexts: list[dict], history: list[dict]) -> str: ...
 
+    async def health_check(self) -> dict[str, object]: ...
+
 
 class OpenAICompatibleLLMService:
     def __init__(self, settings: Settings, fallback: LLMService | None = None):
         self.base_url = self._normalize_base_url(settings.resolved_llm_base_url)
         self.api_key = settings.resolved_llm_api_key
         self.model = settings.resolved_llm_model
+        self.timeout = settings.llm_timeout_seconds
+        self.max_retries = settings.llm_max_retries
         self.fallback = fallback
 
     async def answer(self, question: str, contexts: list[dict], history: list[dict]) -> str:
@@ -24,36 +28,91 @@ class OpenAICompatibleLLMService:
             f"[{item['title']} - {item.get('article') or 'không rõ điều'}] {item['content']}" for item in contexts
         )
         history_text = "\n".join(f"{item['role']}: {item['content']}" for item in history)
-        headers = {"Content-Type": "application/json"}
-        if self.api_key:
-            headers["Authorization"] = f"Bearer {self.api_key}"
         try:
-            async with httpx.AsyncClient(timeout=60.0) as client:
-                response = await client.post(
-                    f"{self.base_url}/chat/completions",
-                    headers=headers,
-                    json={
-                        "model": self.model,
-                        "messages": [
-                            {"role": "system", "content": SYSTEM_PROMPT},
-                            {
-                                "role": "user",
-                                "content": (
-                                    f"Hội thoại gần đây:\n{history_text or 'Chưa có'}\n\n"
-                                    f"Câu hỏi hiện tại: {question}\n\nNgữ cảnh truy xuất:\n{context_text}"
-                                ),
-                            },
-                        ],
-                        "temperature": 0.1,
-                    },
-                )
-                response.raise_for_status()
-                payload = response.json()
+            payload = await self._post_json(
+                "/chat/completions",
+                {
+                    "model": self.model,
+                    "messages": [
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {
+                            "role": "user",
+                            "content": (
+                                f"Hội thoại gần đây:\n{history_text or 'Chưa có'}\n\n"
+                                f"Câu hỏi hiện tại: {question}\n\nNgữ cảnh truy xuất:\n{context_text}"
+                            ),
+                        },
+                    ],
+                    "temperature": 0.1,
+                },
+            )
+            if payload:
                 return payload["choices"][0]["message"]["content"].strip()
         except (httpx.HTTPError, KeyError, IndexError, TypeError):
             if self.fallback is None:
                 raise
             return await self.fallback.answer(question, contexts, history)
+
+    async def health_check(self) -> dict[str, object]:
+        try:
+            payload = await self._get_json("/models")
+            models = [item.get("id") for item in payload.get("data", []) if isinstance(item, dict)]
+            model_ready = not models or self.model in models
+            result: dict[str, object] = {
+                "ready": model_ready,
+                "operational": model_ready or self.fallback is not None,
+                "mode": "remote",
+                "base_url": self.base_url,
+                "model": self.model,
+                "fallback_available": self.fallback is not None,
+            }
+            if not model_ready:
+                result["error"] = f"Configured model '{self.model}' not exposed by remote LLM server"
+                if self.fallback is not None:
+                    result["degraded_reason"] = "Using fallback answerer because the configured remote model is unavailable"
+            return result
+        except (httpx.HTTPError, KeyError, TypeError, ValueError) as exc:
+            return {
+                "ready": False,
+                "operational": self.fallback is not None,
+                "mode": "remote",
+                "base_url": self.base_url,
+                "model": self.model,
+                "fallback_available": self.fallback is not None,
+                "error": str(exc),
+                "degraded_reason": "Using fallback answerer because the remote LLM health check failed"
+                if self.fallback is not None
+                else "Remote LLM health check failed",
+            }
+
+    async def _post_json(self, path: str, payload: dict) -> dict:
+        last_error: Exception | None = None
+        for _ in range(self.max_retries + 1):
+            try:
+                async with httpx.AsyncClient(timeout=self.timeout) as client:
+                    response = await client.post(
+                        f"{self.base_url}{path}",
+                        headers=self._headers(),
+                        json=payload,
+                    )
+                    response.raise_for_status()
+                    return response.json()
+            except (httpx.HTTPError, ValueError) as exc:
+                last_error = exc
+        assert last_error is not None
+        raise last_error
+
+    async def _get_json(self, path: str) -> dict:
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            response = await client.get(f"{self.base_url}{path}", headers=self._headers())
+            response.raise_for_status()
+            return response.json()
+
+    def _headers(self) -> dict[str, str]:
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+        return headers
 
     @staticmethod
     def _normalize_base_url(base_url: str) -> str:
@@ -84,6 +143,9 @@ class ExtractiveLLMService:
             lines.append(f"- {item['title']} - {article_label}: {excerpt}")
         lines.append("Kết luận chỉ nên được sử dụng như công cụ tra cứu ban đầu; cần đối chiếu văn bản gốc trước khi áp dụng.")
         return "\n".join(lines)
+
+    async def health_check(self) -> dict[str, object]:
+        return {"ready": True, "operational": True, "mode": "local_fallback"}
 
 
 

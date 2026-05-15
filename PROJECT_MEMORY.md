@@ -75,7 +75,7 @@ Last verified commands:
 - `GET /api/legal/search?q=Dieu17&top_k=3`
 - `POST /api/chat/query`
 
-The latest test result was `12 passed`.
+The latest test result was `32 passed`.
 
 Live Docker flow was also verified for:
 - preload documents
@@ -108,6 +108,78 @@ Live Docker flow was also verified for:
   moving the current legal RAG app from POC to an operational deployment.
 - Added a root `Makefile` for the standard operator workflow:
   `make up`, `make test`, `make smoke`, `make ps`, and log helpers.
+- Started Phase 1 hardening:
+  added config validation for remote model settings, explicit timeout/retry
+  settings for LLM and embedding backends, and a new `/health/ready` endpoint
+  backed by dependency readiness checks for metadata, vector store, LLM, and
+  embedding services.
+- Updated the smoke script and local operator workflow to include readiness
+  checks in addition to liveness checks.
+- Refined readiness semantics so the app can report `degraded` while still
+  remaining `ready` when remote model services fail but local fallback modes
+  keep the chatbot operational.
+- Aligned the configured `LLM_MODEL` and `EMBEDDING_MODEL` values with the
+  actual `/v1/models` ids exposed by `llama.cpp` to avoid false degraded
+  readiness due to model-name mismatch.
+- Added a worker-personal-income-tax corpus to `data/`:
+  `Luật 109/2025/QH15`, `Nghị quyết 110/2025/UBTVQH15`,
+  `VBHN 04/2007/QH12 + 26/2012/QH13`, `Nghị định 65/2013/NĐ-CP`,
+  and `Thông tư 111/2013/TT-BTC`.
+- Added `scripts/import_worker_tax_docs.py` to re-import those worker-tax
+  documents from official public sources and cleaned the HTML extraction used
+  for `Nghị quyết 110/2025/UBTVQH15` so only article body text is indexed.
+- Updated preload hygiene so `data/README.md` is skipped instead of being
+  ingested into the legal corpus.
+- Expanded title detection to recognize `Nghị định`, `Nghị quyết`, `Thông tư`,
+  and `Văn bản hợp nhất`, which keeps tax-document titles stable in the UI and
+  retrieval output.
+- Added a topical title/phrase fallback in retrieval so short resolutions and
+  natural-language tax questions like `giảm trừ gia cảnh 2026` can surface the
+  right worker-tax materials even when vector recall is weak.
+- Added a deterministic prize-winning tax path for questions such as
+  `trúng số 2 tỷ`: retrieval now merges `trúng thưởng` chunks, the answer layer
+  calculates the 10% tax on the amount above the applicable threshold, and the
+  prompt explicitly prevents applying salary progressive tax brackets to
+  trúng thưởng/xổ số questions.
+- Added a direct inheritance/gift tax path for questions such as
+  `được thừa kế 3 tỷ thì có đóng thuế không`: the answer layer now explains the
+  asset-type assumption, computes both the old/new 10% thresholds, and filters
+  citation noise so the UI no longer shows unrelated procedure clauses for this
+  case.
+- Added structured legal quality evals in `evals/legal_quality_cases.json` with
+  separate retrieval, answer, and calculation checks. `make eval` runs these
+  focused RAG quality tests before broader regression testing.
+- Expanded the eval corpus with group labels such as `tax.prize`,
+  `tax.inheritance`, `tax.family`, `business.rights`, `investment.policy`, and
+  `investment.restrictions`, plus an `EVAL_GROUPS` filter so a subset of domain
+  cases can be run independently.
+- Added `scripts/generate_eval_candidates.py` and `make eval-generate` to create
+  draft eval cases from `data/*.txt`. The generator detects important legal
+  articles, creates retrieval/answer candidates, and writes the ignored local
+  draft `evals/generated_candidates.json` for manual review before selected cases
+  are copied into `evals/legal_quality_cases.json`.
+- Added `tax.disability` handling for questions like
+  `tôi bị khuyết tật thì đóng thuế như thế nào`: retrieval now boosts disability,
+  tax-reduction, exempt compensation, and dependent-relief contexts, while the
+  answer layer explains that disability does not automatically exempt all PIT and
+  separates taxable income, possible tax reduction, exempt benefits, and dependent
+  deductions.
+- Added `tax.liability` handling for questions like
+  `người trong độ tuổi lao động phải đáp ứng điều kiện nào thì sẽ đóng thuế tncn`:
+  the answer layer now explains that working age is not the deciding condition,
+  and retrieval prioritizes PIT taxpayer, taxable-income, salary-income, family
+  deduction, and non-resident salary-tax articles.
+- Latest regression baseline: `env UV_CACHE_DIR=.uv-cache uv run pytest -q`
+  passed with `36 passed`, and the live Docker app was reloaded after the
+  inheritance-tax citation filtering change.
+- Latest full regression baseline after the eval expansion:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `42 passed`.
+- Latest full regression baseline after disability-tax handling:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `45 passed`.
+- Latest full regression baseline after adding the eval candidate generator:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `46 passed`.
+- Latest full regression baseline after tax-liability handling:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `49 passed`.
 
 ## Change Guidance
 

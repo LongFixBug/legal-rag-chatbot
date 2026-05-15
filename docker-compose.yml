@@ -47,9 +47,9 @@ services:
       QDRANT_URL: http://qdrant:6333
       QDRANT_COLLECTION: legal_chunks_qwen3
       LLM_BASE_URL: http://llama-llm:8080
-      LLM_MODEL: qwen2.5-7b-instruct
+      LLM_MODEL: qwen2.5-7b-instruct-q4_k_m.gguf
       EMBEDDING_BASE_URL: http://llama-embed:8080
-      EMBEDDING_MODEL: qwen3-embedding-0.6b
+      EMBEDDING_MODEL: Qwen3-Embedding-0.6B-Q8_0.gguf
     ports:
       - "8000:8000"
     volumes:

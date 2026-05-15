@@ -22,6 +22,9 @@ class LocalVectorStore(VectorStore):
     async def close(self) -> None:
         return None
 
+    async def health_check(self) -> dict[str, Any]:
+        return {"ready": self._path.exists(), "mode": "local", "path": str(self._path)}
+
     def _read(self) -> list[dict[str, Any]]:
         return json.loads(self._path.read_text(encoding="utf-8"))
 
@@ -79,6 +82,13 @@ class QdrantVectorStore(VectorStore):
 
     async def close(self) -> None:
         await self.client.close()
+
+    async def health_check(self) -> dict[str, Any]:
+        try:
+            exists = await self.client.collection_exists(self.collection_name)
+            return {"ready": exists, "mode": "qdrant", "collection": self.collection_name}
+        except Exception as exc:
+            return {"ready": False, "mode": "qdrant", "collection": self.collection_name, "error": str(exc)}
 
     async def upsert(self, point_id: str, vector: list[float], payload: dict[str, Any]) -> None:
         await self.client.upsert(

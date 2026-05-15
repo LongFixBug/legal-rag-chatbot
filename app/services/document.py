@@ -71,6 +71,8 @@ class DocumentService:
         for file_path in sorted(directory.glob("*")):
             if not file_path.is_file() or file_path.suffix.lower() not in {".txt", ".md", ".html", ".htm"}:
                 continue
+            if file_path.stem.lower() == "readme":
+                continue
             if str(file_path) in existing_sources:
                 continue
             raw_bytes = file_path.read_bytes()

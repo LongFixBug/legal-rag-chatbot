@@ -73,17 +73,21 @@ Biến quan trọng trong [`.env.example`](/Users/nguyenhailong/Documents/Chat-b
 - `QDRANT_URL`: bật vector store Qdrant
 - `QDRANT_COLLECTION`: nên giữ `legal_chunks_qwen3` cho bộ embedding hiện tại
 - `LLM_BASE_URL`, `LLM_MODEL`: trỏ tới `llama.cpp` chat server
+- `LLM_TIMEOUT_SECONDS`, `LLM_MAX_RETRIES`: timeout và retry policy cho chat backend
 - `EMBEDDING_BASE_URL`, `EMBEDDING_MODEL`: trỏ tới `llama.cpp` embedding server
+- `EMBEDDING_TIMEOUT_SECONDS`, `EMBEDDING_MAX_RETRIES`: timeout và retry policy cho embedding backend
 
 Nếu bỏ trống các biến trên, app dùng local fallback.
 
 Lưu ý:
 - `.env.example` dùng cổng PostgreSQL host là `5433` để khớp với `docker-compose.yml`
 - embedding hiện tại dùng chiều vector `1024`; nếu đổi model hoặc dimension thì cần reindex và nên dùng collection Qdrant mới
+- với `llama.cpp`, `LLM_MODEL` và `EMBEDDING_MODEL` nên đặt đúng theo `id` từ `/v1/models`, hiện tại là tên file `.gguf`
 
 ## API chính
 
 - `GET /health`
+- `GET /health/ready`
 - `GET /api/documents`
 - `POST /api/documents/ingest`
 - `POST /api/documents/upload`
@@ -108,7 +112,42 @@ Workflow nhanh bằng `Makefile`:
 ```bash
 make up
 make test
+make eval
+make eval-generate
 make smoke
 make ps
+make ready
 make logs-api
+```
+
+Ghi chú vận hành:
+- `/health` là liveness check đơn giản
+- `/health/ready` là readiness check theo dependency
+- `/health/ready` có thể trả `status: "degraded"` nhưng vẫn `ready: true` nếu remote LLM hoặc embedding backend lỗi nhưng local fallback vẫn phục vụ được
+
+## Quality eval
+
+Bộ eval nằm ở [evals/legal_quality_cases.json](/Users/nguyenhailong/Documents/Chat-bot-RAG-full/evals/legal_quality_cases.json) và được chạy bằng:
+
+```bash
+make eval
+```
+
+Eval đang tách ba nhóm:
+- `retrieval`: câu hỏi phải kéo đúng văn bản/chunk
+- `answer`: câu trả lời phải có cụm bắt buộc và tránh cụm sai đã biết
+- `calculation`: phép tính pháp lý như thuế trúng thưởng phải ra đúng số
+
+Khi thêm nhiều văn bản luật mới, có thể sinh bản nháp eval trước:
+
+```bash
+make eval-generate
+```
+
+Lệnh này ghi `evals/generated_candidates.json` từ các file `data/*.txt`. File này là bản nháp cục bộ và không commit; hãy duyệt các case tốt rồi mới đưa những case đại diện vào [evals/legal_quality_cases.json](/Users/nguyenhailong/Documents/Chat-bot-RAG-full/evals/legal_quality_cases.json).
+
+Để sinh nháp cho một văn bản cụ thể:
+
+```bash
+uv run python scripts/generate_eval_candidates.py --file luat-dau-tu-2020.txt
 ```

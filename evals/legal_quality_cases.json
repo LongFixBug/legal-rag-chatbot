@@ -1,0 +1,230 @@
+{
+  "retrieval": [
+    {
+      "id": "enterprise_article_17_unaccented",
+      "group": "business.rights",
+      "question": "Dieu17",
+      "seed_files": ["luat-doanh-nghiep-2020.txt"],
+      "top_k": 3,
+      "expected_any": {
+        "title_contains": "Luật Doanh nghiệp 2020",
+        "article": "Điều 17"
+      }
+    },
+    {
+      "id": "enterprise_restricted_entities_article_17",
+      "group": "business.rights",
+      "question": "Ai không được quyền thành lập và quản lý doanh nghiệp?",
+      "seed_files": ["luat-doanh-nghiep-2020.txt"],
+      "top_k": 3,
+      "expected_any": {
+        "title_contains": "Luật Doanh nghiệp 2020",
+        "article": "Điều 17",
+        "excerpt_contains": "không được quyền thành lập và quản lý doanh nghiệp"
+      }
+    },
+    {
+      "id": "investment_article_5_rights",
+      "group": "investment.policy",
+      "question": "Nhà đầu tư có quyền thực hiện hoạt động đầu tư kinh doanh trong ngành nghề nào?",
+      "seed_files": ["luat-dau-tu-2020.txt"],
+      "top_k": 3,
+      "expected_any": {
+        "title_contains": "Luật Đầu tư 2020",
+        "article": "Điều 5",
+        "excerpt_contains": "không cấm"
+      }
+    },
+    {
+      "id": "investment_article_6_bans",
+      "group": "investment.restrictions",
+      "question": "Những ngành nghề nào bị cấm đầu tư kinh doanh?",
+      "seed_files": ["luat-dau-tu-2020.txt"],
+      "top_k": 3,
+      "expected_any": {
+        "title_contains": "Luật Đầu tư 2020",
+        "article": "Điều 6",
+        "excerpt_contains": "Cấm đầu tư kinh doanh"
+      }
+    },
+    {
+      "id": "worker_tax_family_deduction_2026",
+      "group": "tax.family",
+      "question": "Mức giảm trừ gia cảnh thuế TNCN năm 2026 của người lao động là bao nhiêu?",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "nghi-quyet-110-2025-ubtvqh15-giam-tru-gia-canh.txt"
+      ],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Luật Thuế thu nhập cá nhân 109/2025/QH15",
+        "article": "Điều 10",
+        "excerpt_contains": "15,5 triệu"
+      }
+    },
+    {
+      "id": "worker_tax_liability_conditions",
+      "group": "tax.liability",
+      "question": "người trong độ tuổi lao động phải đáp ứng điều kiện nào thì sẽ đóng thuế tncn",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "thong-tu-111-2013-tt-btc-thue-thu-nhap-ca-nhan.txt"
+      ],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Luật Thuế thu nhập cá nhân 109/2025/QH15",
+        "article": "Điều 2",
+        "excerpt_contains": "thu nhập chịu thuế"
+      }
+    },
+    {
+      "id": "disability_tax_relief",
+      "group": "tax.disability",
+      "question": "tôi bị khuyết tật thì đóng thuế như thế nào",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "thong-tu-111-2013-tt-btc-thue-thu-nhap-ca-nhan.txt"
+      ],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Luật Thuế thu nhập cá nhân 109/2025/QH15",
+        "article": "Điều 5",
+        "excerpt_contains": "giảm thuế"
+      }
+    },
+    {
+      "id": "inheritance_tax_article_18",
+      "group": "tax.inheritance",
+      "question": "được thừa kế 3 tỷ thì có đóng thuế không",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "vbhn-thue-thu-nhap-ca-nhan-2007-2012.txt"
+      ],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Luật Thuế thu nhập cá nhân 109/2025/QH15",
+        "article": "Điều 18",
+        "excerpt_contains": "thừa kế"
+      }
+    },
+    {
+      "id": "lottery_prize_tax",
+      "group": "tax.prize",
+      "question": "trúng số 2 tỷ thì đóng thuế bao nhiêu",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "vbhn-thue-thu-nhap-ca-nhan-2007-2012.txt",
+        "thong-tu-111-2013-tt-btc-thue-thu-nhap-ca-nhan.txt"
+      ],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Luật Thuế thu nhập cá nhân 109/2025/QH15",
+        "article": "Điều 15",
+        "excerpt_contains": "trúng thưởng"
+      }
+    }
+  ],
+  "answer": [
+    {
+      "id": "enterprise_article_17_answer",
+      "group": "business.rights",
+      "question": "Điều 17 quy định gì về quyền thành lập doanh nghiệp?",
+      "seed_files": ["luat-doanh-nghiep-2020.txt"],
+      "must_include": ["Điều 17", "thành lập"],
+      "must_not_include": ["Chưa có căn cứ"]
+    },
+    {
+      "id": "enterprise_rights_answer_variant",
+      "group": "business.rights",
+      "question": "Tổ chức, cá nhân có quyền thành lập và quản lý doanh nghiệp không?",
+      "seed_files": ["luat-doanh-nghiep-2020.txt"],
+      "must_include": ["Tổ chức, cá nhân có quyền thành lập và quản lý doanh nghiệp", "trừ trường hợp"],
+      "must_not_include": ["Chưa có căn cứ"]
+    },
+    {
+      "id": "investment_article_5_answer",
+      "group": "investment.policy",
+      "question": "Nhà đầu tư có quyền thực hiện hoạt động đầu tư kinh doanh trong ngành nghề nào?",
+      "seed_files": ["luat-dau-tu-2020.txt"],
+      "must_include": ["không cấm", "Nhà đầu tư có quyền"],
+      "must_not_include": ["Chưa có căn cứ"]
+    },
+    {
+      "id": "investment_article_6_answer",
+      "group": "investment.restrictions",
+      "question": "Những ngành nghề nào bị cấm đầu tư kinh doanh?",
+      "seed_files": ["luat-dau-tu-2020.txt"],
+      "must_include": ["Cấm đầu tư kinh doanh", "ma túy"],
+      "must_not_include": ["Chưa có căn cứ"]
+    },
+    {
+      "id": "worker_tax_family_deduction_answer",
+      "group": "tax.family",
+      "question": "Mức giảm trừ gia cảnh thuế TNCN năm 2026 của người lao động là bao nhiêu?",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "nghi-quyet-110-2025-ubtvqh15-giam-tru-gia-canh.txt"
+      ],
+      "must_include": ["15,5 triệu", "6,2 triệu"],
+      "must_not_include": ["Chưa có căn cứ"]
+    },
+    {
+      "id": "worker_tax_liability_answer",
+      "group": "tax.liability",
+      "question": "người trong độ tuổi lao động phải đáp ứng điều kiện nào thì sẽ đóng thuế tncn",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "thong-tu-111-2013-tt-btc-thue-thu-nhap-ca-nhan.txt"
+      ],
+      "must_include": ["độ tuổi lao động không phải là điều kiện quyết định", "thu nhập chịu thuế", "15,5 triệu đồng/tháng"],
+      "must_not_include": ["Dựa trên các văn bản đã nạp", "Kết luận chỉ nên được sử dụng", "Chưa có căn cứ"]
+    },
+    {
+      "id": "disability_tax_answer",
+      "group": "tax.disability",
+      "question": "tôi bị khuyết tật thì đóng thuế như thế nào",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "thong-tu-111-2013-tt-btc-thue-thu-nhap-ca-nhan.txt"
+      ],
+      "must_include": ["không tự động được miễn toàn bộ thuế TNCN", "xét giảm thuế", "người phụ thuộc"],
+      "must_not_include": ["Dựa trên các văn bản đã nạp", "Chưa có căn cứ"]
+    },
+    {
+      "id": "inheritance_tax_answer",
+      "group": "tax.inheritance",
+      "question": "được thừa kế 3 tỷ thì có đóng thuế không",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "vbhn-thue-thu-nhap-ca-nhan-2007-2012.txt"
+      ],
+      "must_include": ["tiền mặt 3 tỷ", "bất động sản", "299.000.000 đồng", "298.000.000 đồng"],
+      "must_not_include": ["Chưa đủ dữ liệu để chốt một con số duy nhất", "Chưa có căn cứ"]
+    }
+  ],
+  "calculation": [
+    {
+      "id": "lottery_2_billion_tax",
+      "group": "tax.prize",
+      "question": "trúng số 2 tỷ thì đóng thuế bao nhiêu",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "vbhn-thue-thu-nhap-ca-nhan-2007-2012.txt",
+        "thong-tu-111-2013-tt-btc-thue-thu-nhap-ca-nhan.txt"
+      ],
+      "must_include": ["10%", "199.000.000 đồng", "198.000.000 đồng"],
+      "must_not_include": ["25%", "1.500.000", "Chưa đủ dữ liệu"]
+    },
+    {
+      "id": "inheritance_3_billion_tax",
+      "group": "tax.inheritance",
+      "question": "được thừa kế 3 tỷ thì có đóng thuế không",
+      "seed_files": [
+        "luat-thue-thu-nhap-ca-nhan-109-2025-qh15.txt",
+        "vbhn-thue-thu-nhap-ca-nhan-2007-2012.txt"
+      ],
+      "must_include": ["10%", "299.000.000 đồng", "298.000.000 đồng"],
+      "must_not_include": ["Chưa đủ dữ liệu", "25%"]
+    }
+  ]
+}

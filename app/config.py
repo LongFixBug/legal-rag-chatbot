@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,12 +12,12 @@ class Settings(BaseSettings):
     storage_dir: Path = Field(default=Path(".storage"))
     data_dir: Path = Field(default=Path("data"))
     preload_sample_data: bool = True
-    embedding_dimension: int = 1024
-    top_k: int = 4
-    max_history_messages: int = 6
-    lexical_weight: float = 0.35
-    article_reference_boost: float = 0.75
-    title_match_boost: float = 0.2
+    embedding_dimension: int = Field(default=1024, gt=0)
+    top_k: int = Field(default=4, ge=1)
+    max_history_messages: int = Field(default=6, ge=0)
+    lexical_weight: float = Field(default=0.35, ge=0.0, le=1.0)
+    article_reference_boost: float = Field(default=0.75, ge=0.0)
+    title_match_boost: float = Field(default=0.2, ge=0.0)
 
     database_url: str = ""
     qdrant_url: str = ""
@@ -34,8 +34,27 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     openai_chat_model: str = ""
     openai_embedding_model: str = ""
+    llm_timeout_seconds: float = Field(default=60.0, gt=0.0)
+    llm_max_retries: int = Field(default=1, ge=0)
+    embedding_timeout_seconds: float = Field(default=30.0, gt=0.0)
+    embedding_max_retries: int = Field(default=1, ge=0)
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    @model_validator(mode="after")
+    def validate_runtime_config(self) -> "Settings":
+        remote_pairs = (
+            ("LLM", self.resolved_llm_base_url, self.resolved_llm_model),
+            ("Embedding", self.resolved_embedding_base_url, self.resolved_embedding_model),
+        )
+        for name, base_url, model in remote_pairs:
+            if bool(base_url) ^ bool(model):
+                raise ValueError(f"{name} remote config requires both base URL and model")
+        if self.database_url and not self.database_url.startswith("postgresql+"):
+            raise ValueError("DATABASE_URL must start with 'postgresql+' when configured")
+        if self.qdrant_url and not self.qdrant_url.startswith("http"):
+            raise ValueError("QDRANT_URL must start with 'http' when configured")
+        return self
 
     @property
     def resolved_llm_base_url(self) -> str:

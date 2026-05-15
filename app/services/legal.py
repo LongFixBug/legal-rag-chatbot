@@ -6,7 +6,10 @@ from dataclasses import dataclass
 
 
 ARTICLE_SPLIT_PATTERN = re.compile(r"(?=Điều\s+\d+[A-Za-z0-9-]*[\.:])", re.IGNORECASE)
-TITLE_PATTERN = re.compile(r"^(Luật[^\n]+|Bộ luật[^\n]+)", re.IGNORECASE | re.MULTILINE)
+TITLE_PATTERN = re.compile(
+    r"^(Luật[^\n]+|Bộ luật[^\n]+|Nghị định[^\n]+|Nghị quyết[^\n]+|Thông tư[^\n]+|Văn bản hợp nhất[^\n]+)",
+    re.IGNORECASE | re.MULTILINE,
+)
 TOKEN_PATTERN = re.compile(r"[\wÀ-ỹ]+", re.UNICODE)
 ALNUM_BOUNDARY_PATTERN = re.compile(r"(?<=[A-Za-zÀ-ỹ])(?=\d)|(?<=\d)(?=[A-Za-zÀ-ỹ])")
 STOPWORDS = {
@@ -74,7 +77,27 @@ class LegalTextService:
         overlap = len(query_tokens & content_tokens)
         return overlap / len(query_tokens)
 
+    def has_phrase_overlap(self, query: str, content: str, min_terms: int = 3) -> bool:
+        query_terms = self._ordered_terms(query)
+        content_terms = " ".join(self._ordered_terms(content))
+        if len(query_terms) < min_terms or not content_terms:
+            return False
+        for index in range(len(query_terms) - min_terms + 1):
+            phrase = " ".join(query_terms[index : index + min_terms])
+            if phrase and phrase in content_terms:
+                return True
+        return False
+
     @staticmethod
     def _fold_text(text: str) -> str:
         normalized = unicodedata.normalize("NFKD", text.replace("đ", "d").replace("Đ", "D"))
         return "".join(char for char in normalized if not unicodedata.combining(char)).lower()
+
+    def _ordered_terms(self, text: str) -> list[str]:
+        prepared = self.normalize_query(text)
+        terms: list[str] = []
+        for token in TOKEN_PATTERN.findall(prepared):
+            folded = self._fold_text(token)
+            if len(folded) > 1 and folded not in STOPWORDS:
+                terms.append(folded)
+        return terms

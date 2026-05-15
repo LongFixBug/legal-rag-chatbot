@@ -13,3 +13,5 @@ models/*.gguf
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+evals/generated_candidates.json
+evals/generated_cases.json
