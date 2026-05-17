@@ -7,19 +7,19 @@ st.title("Chat nghĩa vụ quân sự")
 if "conversation_id" not in st.session_state:
     st.session_state.conversation_id = None
 
-left, right = st.columns([3, 1])
-with left:
-    st.caption(f"Conversation ID: {st.session_state.conversation_id or 'Chưa tạo'}")
-with right:
-    if st.button("Cuộc chat mới"):
-        st.session_state.conversation_id = None
-        st.rerun()
+debug_mode = st.sidebar.toggle("Chế độ debug", value=False)
+if debug_mode:
+    st.sidebar.caption(f"Conversation ID: {st.session_state.conversation_id or 'Chưa tạo'}")
+
+if st.button("Cuộc chat mới"):
+    st.session_state.conversation_id = None
+    st.rerun()
 
 question = st.text_area(
     "Nhập câu hỏi",
     placeholder="Ví dụ: Em đang học đại học có được tạm hoãn nghĩa vụ quân sự không?",
 )
-top_k = st.slider("Số chunk truy xuất", min_value=1, max_value=6, value=4)
+top_k = st.sidebar.slider("Số chunk truy xuất", min_value=1, max_value=6, value=4) if debug_mode else 4
 
 if st.button("Hỏi") and question.strip():
     if st.session_state.conversation_id is None:
@@ -31,12 +31,16 @@ if st.button("Hỏi") and question.strip():
     st.write(result["answer"])
     if result.get("validation_warnings"):
         st.warning("\n".join(result["validation_warnings"]))
-    st.caption(f"History used: {result['history_used']} messages")
-    st.subheader("Citations")
+    if debug_mode:
+        st.caption(f"History used: {result['history_used']} messages")
+        st.caption(f"Retrieved chunks: {result['retrieved_chunks']}")
+    st.subheader("Căn cứ")
     for citation in result["citations"]:
-        st.markdown(f"**{citation['title']} - {citation.get('article') or 'Không rõ điều'}**")
-        st.caption(f"Score: {citation['score']}")
-        st.write(citation["excerpt"])
+        label = f"{citation['title']} - {citation.get('article') or 'đoạn liên quan'}"
+        with st.expander(label):
+            if debug_mode:
+                st.caption(f"Score: {citation['score']}")
+            st.write(citation["excerpt"])
 
 if st.session_state.conversation_id:
     st.subheader("Lịch sử hội thoại")

@@ -20,7 +20,12 @@ def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     data_dir = tmp_path / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
     (data_dir / "sample.txt").write_text(
-        "Luật Doanh nghiệp 2020\n\nĐiều 17. Quyền thành lập doanh nghiệp.\n1. Tổ chức, cá nhân có quyền thành lập và quản lý doanh nghiệp tại Việt Nam, trừ trường hợp pháp luật cấm.",
+        "Văn bản hợp nhất 80/VBHN-VPQH năm 2025 hợp nhất Luật Nghĩa vụ quân sự\n\n"
+        "Điều 30. Độ tuổi gọi nhập ngũ.\n"
+        "Công dân đủ 18 tuổi được gọi nhập ngũ; độ tuổi gọi nhập ngũ từ đủ 18 tuổi đến hết 25 tuổi; "
+        "công dân được đào tạo trình độ cao đẳng, đại học đã được tạm hoãn gọi nhập ngũ thì độ tuổi gọi nhập ngũ đến hết 27 tuổi.\n\n"
+        "Điều 41. Tạm hoãn gọi nhập ngũ và miễn gọi nhập ngũ.\n"
+        "Đang học đại học hệ chính quy trong thời gian một khóa đào tạo của một trình độ đào tạo thì được tạm hoãn gọi nhập ngũ.",
         encoding="utf-8",
     )
 

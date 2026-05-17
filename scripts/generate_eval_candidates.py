@@ -17,18 +17,18 @@ WORD_PATTERN = re.compile(r"[\wÀ-ỹ]+", re.UNICODE)
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,]\d+)*\s*(?:triệu|tỷ|nghìn|%|phần trăm|đồng|năm|tháng|ngày|mức|kg|ha|km)", re.IGNORECASE)
 
 IMPORTANT_TOPICS: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("calculation", ("thuế", "mức", "tỷ lệ", "thu nhập tính thuế", "giảm trừ", "miễn thuế", "giảm thuế", "thuế suất", "tính thuế", "căn cứ tính")),
-    ("condition", ("điều kiện", "đáp ứng", "trường hợp", "không được", "bị cấm", "cấm", "hạn chế", "không áp dụng")),
-    ("procedure", ("hồ sơ", "thủ tục", "khai", "đăng ký", "quyết toán", "kê khai", "nộp hồ sơ", "hoàn thuế")),
+    ("calculation", ("mức", "tỷ lệ", "thời hạn", "độ tuổi", "bao nhiêu", "ngày", "tháng", "năm", "điểm")),
+    ("condition", ("điều kiện", "đáp ứng", "trường hợp", "không được", "bị cấm", "cấm", "hạn chế", "không áp dụng", "tạm hoãn", "miễn")),
+    ("procedure", ("hồ sơ", "thủ tục", "đăng ký", "kê khai", "nộp hồ sơ", "khám sức khỏe", "lệnh gọi")),
     ("rights", ("quyền", "nghĩa vụ", "trách nhiệm", "được phép", "quyền hạn")),
     ("definition", ("giải thích từ ngữ", "bao gồm", "là tổ chức", "là cá nhân", "được hiểu")),
-    ("obligation", ("phải nộp", "có trách nhiệm", "nghĩa vụ", "người nộp thuế", "đối tượng", "phạm vi")),
+    ("obligation", ("có trách nhiệm", "nghĩa vụ", "đối tượng", "phạm vi", "phải có mặt", "phục vụ tại ngũ")),
 )
 
 PARAPHRASE_TEMPLATES: tuple[tuple[str, str], ...] = (
     ("calculation", "{article} của {title} quy định mức hoặc cách tính như thế nào?"),
-    ("calculation", "Cho tôi biết {article} của {title} quy định về thuế suất và cách tính?"),
-    ("calculation", "{article} trong {title} nói gì về mức và cách tính?"),
+    ("calculation", "Cho tôi biết {article} của {title} quy định thời hạn hoặc mức áp dụng thế nào?"),
+    ("calculation", "{article} trong {title} nói gì về độ tuổi, thời hạn hoặc mức áp dụng?"),
     ("condition", "{article} của {title} quy định những điều kiện gì?"),
     ("condition", "Những trường hợp nào được áp dụng {article} của {title}?"),
     ("condition", "{article} trong {title} áp dụng cho đối tượng nào?"),
@@ -36,7 +36,7 @@ PARAPHRASE_TEMPLATES: tuple[tuple[str, str], ...] = (
     ("rights", "Theo {article} của {title}, tổ chức cá nhân có những quyền gì?"),
     ("rights", "{article} trong {title} quy định trách nhiệm ra sao?"),
     ("obligation", "{article} của {title} quy định nghĩa vụ gì?"),
-    ("obligation", "Ai là đối tượng phải nộp thuế theo {article} của {title}?"),
+    ("obligation", "Ai là đối tượng phải thực hiện nghĩa vụ theo {article} của {title}?"),
     ("definition", "{article} của {title} định nghĩa những gì?"),
     ("definition", "{article} trong {title} giải thích các thuật ngữ nào?"),
     ("procedure", "{article} của {title} quy định thủ tục như thế nào?"),
@@ -92,8 +92,8 @@ def has_numbers(article_text: str) -> bool:
 
 def infer_group(title: str, article_text: str) -> str:
     folded = fold_text(f"{title} {article_text}")
-    if "thue" in folded or "thu nhap ca nhan" in folded:
-        return "tax.generated"
+    if "nghia vu quan su" in folded or "nhap ngu" in folded:
+        return "military.generated"
     if "lao dong" in folded:
         return "labor.generated"
     if "doanh nghiep" in folded:
@@ -108,12 +108,14 @@ def build_question(candidate: ArticleCandidate) -> str:
     article = candidate.article
     folded = fold_text(candidate.content)
     if candidate.topic == "calculation":
-        if "giam tru gia canh" in folded:
-            return f"{article} của {title} quy định mức giảm trừ gia cảnh như thế nào?"
-        if "giam thue" in folded:
-            return f"{article} của {title} quy định giảm thuế trong trường hợp nào?"
-        return f"{article} của {title} quy định cách tính hoặc mức áp dụng như thế nào?"
+        if "do tuoi" in folded or "tuoi" in folded:
+            return f"{article} của {title} quy định độ tuổi như thế nào?"
+        if "thoi han" in folded:
+            return f"{article} của {title} quy định thời hạn như thế nào?"
+        return f"{article} của {title} quy định mức hoặc tiêu chí áp dụng như thế nào?"
     if candidate.topic == "condition":
+        if "tam hoan" in folded or "mien goi" in folded:
+            return f"{article} của {title} quy định các trường hợp tạm hoãn hoặc miễn gọi nhập ngũ nào?"
         if "cam" in folded or "khong duoc" in folded:
             return f"{article} của {title} quy định những trường hợp nào bị cấm hoặc không được thực hiện?"
         return f"{article} của {title} quy định điều kiện áp dụng như thế nào?"
@@ -144,10 +146,10 @@ def representative_phrase(article_text: str) -> str:
     cleaned = _normalize_whitespace(article_text)
     lowered = cleaned.lower()
     priority_keywords = (
-        "giảm trừ gia cảnh", "giảm thuế", "không được", "cấm", "bị cấm",
-        "quyền", "nghĩa vụ", "bao gồm", "người nộp thuế", "thu nhập chịu thuế",
-        "thuế suất", "miễn thuế", "trúng thưởng", "thừa kế", "quà tặng",
-        "thu nhập tính thuế", "khấu trừ", "hoàn thuế",
+        "tạm hoãn", "miễn gọi nhập ngũ", "độ tuổi", "đủ 18 tuổi",
+        "khám sức khỏe", "không được", "cấm", "bị cấm", "quyền",
+        "nghĩa vụ", "bao gồm", "phục vụ tại ngũ", "công dân nữ",
+        "xử phạt", "không chấp hành", "xuất ngũ",
     )
     for keyword in priority_keywords:
         index = lowered.find(keyword)

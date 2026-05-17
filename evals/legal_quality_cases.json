@@ -70,6 +70,42 @@
         "article": "Điều 6",
         "excerpt_contains": "25.000.000 đồng đến 35.000.000 đồng"
       }
+    },
+    {
+      "id": "military_female_service",
+      "group": "military.gender",
+      "question": "con gái có phải đi nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Văn bản hợp nhất 80",
+        "article": "Điều 6",
+        "excerpt_contains": "Công dân nữ"
+      }
+    },
+    {
+      "id": "military_discharge",
+      "group": "military.discharge",
+      "question": "khi nào được xuất ngũ",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Văn bản hợp nhất 80",
+        "article": "Điều 43",
+        "excerpt_contains": "hết thời hạn phục vụ tại ngũ"
+      }
+    },
+    {
+      "id": "military_only_child_deferment",
+      "group": "military.deferment",
+      "question": "con một có được miễn nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "top_k": 5,
+      "expected_any": {
+        "title_contains": "Văn bản hợp nhất 80",
+        "article": "Điều 41",
+        "excerpt_contains": "lao động duy nhất"
+      }
     }
   ],
   "answer": [
@@ -120,6 +156,38 @@
       "seed_files": ["nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"],
       "must_include": ["10 đến 12 triệu đồng", "25 đến 35 triệu đồng", "Điều 6"],
       "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+    },
+    {
+      "id": "military_female_service_answer",
+      "group": "military.gender",
+      "question": "con gái có phải đi nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "must_include": ["Công dân nữ", "tự nguyện", "Quân đội có nhu cầu"],
+      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+    },
+    {
+      "id": "military_discharge_answer",
+      "group": "military.discharge",
+      "question": "khi nào được xuất ngũ",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "must_include": ["hết thời hạn phục vụ tại ngũ", "Điều 21", "Điều 43"],
+      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+    },
+    {
+      "id": "military_only_child_deferment_answer",
+      "group": "military.deferment",
+      "question": "con một có được miễn nghĩa vụ quân sự không",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "must_include": ["không tự động được miễn", "lao động duy nhất"],
+      "must_not_include": ["đương nhiên được miễn", "Chưa có căn cứ"]
+    },
+    {
+      "id": "military_out_of_scope_answer",
+      "group": "military.scope",
+      "question": "trúng số 2 tỷ thì đóng thuế bao nhiêu",
+      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "must_include": ["chỉ hỗ trợ", "nghĩa vụ quân sự"],
+      "must_not_include": ["199.000.000 đồng", "thuế"]
     }
   ],
   "calculation": []

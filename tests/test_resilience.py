@@ -54,7 +54,7 @@ async def test_embedding_service_retries_then_falls_back(monkeypatch: pytest.Mon
     fallback = LocalHashEmbeddingService(settings.embedding_dimension)
     service = OpenAICompatibleEmbeddingService(settings, fallback=fallback)
 
-    vector = await service.embed("Điều 17 doanh nghiệp")
+    vector = await service.embed("Điều 30 nghĩa vụ quân sự")
 
     assert attempts["count"] == 2
     assert len(vector) == settings.embedding_dimension

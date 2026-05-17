@@ -9,10 +9,10 @@ def test_generate_eval_candidates_from_legal_text(tmp_path: Path):
     (data_dir / "luat-mau.txt").write_text(
         "\n".join(
             [
-                "Luật Mẫu",
+                "Luật Nghĩa vụ quân sự mẫu",
                 "",
-                "Điều 5. Giảm thuế",
-                "Người nộp thuế gặp khó khăn do tai nạn, bệnh hiểm nghèo thì được giảm thuế.",
+                "Điều 30. Độ tuổi gọi nhập ngũ",
+                "Công dân đủ 18 tuổi được gọi nhập ngũ; độ tuổi gọi nhập ngũ từ đủ 18 tuổi đến hết 25 tuổi.",
                 "",
                 "Điều 6. Nội dung chung",
                 "Quy định khác.",
@@ -28,8 +28,8 @@ def test_generate_eval_candidates_from_legal_text(tmp_path: Path):
     retrieval = payload["retrieval"][0]
     answer = payload["answer"][0]
     assert retrieval["draft"] is True
-    assert retrieval["expected_any"]["title_contains"] == "Luật Mẫu"
-    assert retrieval["expected_any"]["article"] == "Điều 5"
+    assert retrieval["expected_any"]["title_contains"] == "Luật Nghĩa vụ quân sự mẫu"
+    assert retrieval["expected_any"]["article"] == "Điều 30"
     assert retrieval["seed_files"] == ["luat-mau.txt"]
     assert answer["question"] == retrieval["question"]
-    assert "Điều 5" in answer["must_include"] or any("Điều 5" in item for item in answer["must_include"])
+    assert "Điều 30" in answer["must_include"] or any("Điều 30" in item for item in answer["must_include"])

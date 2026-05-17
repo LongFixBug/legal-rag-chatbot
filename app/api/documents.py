@@ -47,6 +47,15 @@ async def preload_documents(services: AppServices = Depends(get_services)) -> di
     return {"documents_ingested": count}
 
 
+@router.post("/reindex")
+async def reindex_documents(services: AppServices = Depends(get_services)) -> dict[str, int]:
+    deleted, ingested = await services.documents.reindex_directory(
+        services.settings.data_dir,
+        include_pattern=services.settings.preload_include_pattern,
+    )
+    return {"documents_deleted": deleted, "documents_ingested": ingested}
+
+
 @router.delete("/{document_id}")
 async def delete_document(document_id: str, services: AppServices = Depends(get_services)) -> dict[str, bool]:
     deleted = await services.documents.delete_document(document_id)

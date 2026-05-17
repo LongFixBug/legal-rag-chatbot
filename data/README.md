@@ -14,4 +14,5 @@ Lưu ý:
 - `data/README.md` chỉ là tài liệu hướng dẫn và đã được loại khỏi `preload`
 - Docker/app mặc định dùng `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su-curated-*.txt`,
   nên chỉ preload corpus nghĩa vụ quân sự đã được làm sạch cho demo
-- khi thêm hoặc thay đổi nguồn dữ liệu, cần gọi lại `POST /api/documents/preload`
+- khi thêm hoặc thay đổi nguồn dữ liệu, nên gọi `POST /api/documents/reindex`
+  để xoá dữ liệu preload cũ rồi nạp lại corpus curated

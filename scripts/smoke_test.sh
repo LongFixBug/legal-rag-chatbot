@@ -47,18 +47,19 @@ log "Checking API readiness at $API_BASE_URL/health/ready"
 ready_response="$(request GET "$API_BASE_URL/health/ready")"
 require_contains "readiness response" "$ready_response" '"ready":true'
 
-log "Checking preload endpoint"
-preload_response="$(request POST "$API_BASE_URL$API_PREFIX/documents/preload")"
-require_contains "preload response" "$preload_response" '"documents_ingested"'
+log "Checking clean reindex endpoint"
+reindex_response="$(request POST "$API_BASE_URL$API_PREFIX/documents/reindex")"
+require_contains "reindex response" "$reindex_response" '"documents_ingested"'
 
 log "Checking legal search endpoint"
-legal_response="$(request GET "$API_BASE_URL$API_PREFIX/legal/search?q=Dieu17&top_k=3")"
+legal_response="$(request GET "$API_BASE_URL$API_PREFIX/legal/search?q=Dieu30&top_k=3")"
 require_contains "legal search response" "$legal_response" '"results"'
 
 log "Checking chat query endpoint"
-chat_response="$(request POST "$API_BASE_URL$API_PREFIX/chat/query" '{"question":"Điều 17 quy định gì về quyền thành lập doanh nghiệp?","top_k":3}')"
+chat_response="$(request POST "$API_BASE_URL$API_PREFIX/chat/query" '{"question":"bao nhiêu tuổi thì phải đi nghĩa vụ quân sự?","top_k":3}')"
 require_contains "chat response" "$chat_response" '"conversation_id"'
 require_contains "chat response" "$chat_response" '"citations"'
 require_contains "chat response" "$chat_response" '"answer"'
+require_contains "chat response" "$chat_response" 'đủ 18 tuổi'
 
 log "Smoke test passed"

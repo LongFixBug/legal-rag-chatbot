@@ -4,4 +4,5 @@ def test_chat_without_documents(client):
     payload = response.json()
     assert payload["conversation_id"]
     assert payload["retrieved_chunks"] == 0
-    assert "Chưa có căn cứ" in payload["answer"]
+    assert "chỉ hỗ trợ" in payload["answer"]
+    assert "nghĩa vụ quân sự" in payload["answer"]

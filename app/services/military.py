@@ -14,6 +14,8 @@ class MilitaryQuestionType(str, enum.Enum):
     eyesight = "eyesight"
     exam_call = "exam_call"
     penalty = "penalty"
+    female = "female"
+    discharge = "discharge"
     general = "general"
     non_military = "non_military"
 
@@ -31,6 +33,14 @@ MILITARY_KEYWORDS = (
     "mien nhap ngu",
     "trung tuyen",
     "xuat ngu",
+    "dai hoc",
+    "cao dang",
+    "dang hoc",
+    "sinh vien",
+    "con mot",
+    "nu co phai",
+    "con gai",
+    "dan quan thuong truc",
 )
 
 
@@ -43,11 +53,15 @@ class MilitaryServiceLawService:
 
         if any(term in folded for term in ("bao nhieu tuoi", "do tuoi", "tuoi nao", "het bao nhieu tuoi", "27 tuoi", "25 tuoi")):
             return MilitaryQuestionType.age
-        if any(term in folded for term in ("bao lau", "may nam", "thoi han", "phuc vu tai ngu")):
+        if any(term in folded for term in ("bao lau", "may nam", "thoi han", "phuc vu tai ngu", "xuat ngu")):
+            if "xuat ngu" in folded:
+                return MilitaryQuestionType.discharge
             return MilitaryQuestionType.service_duration
         if any(term in folded for term in ("sinh vien", "dai hoc", "cao dang", "dang hoc", "hoc dai hoc", "hoc cao dang")):
             return MilitaryQuestionType.student_defer
-        if any(term in folded for term in ("tam hoan", "mien", "lao dong duy nhat", "con liet si", "thuong binh")):
+        if any(term in folded for term in ("nu co phai", "con gai", "cong dan nu", "phu nu")):
+            return MilitaryQuestionType.female
+        if any(term in folded for term in ("tam hoan", "duoc hoan", "mien", "lao dong duy nhat", "con liet si", "thuong binh", "con mot", "mot con", "dan quan thuong truc")):
             return MilitaryQuestionType.defer_exempt
         if any(term in folded for term in ("khong di kham", "tron", "phat", "xu phat", "khong chap hanh")):
             return MilitaryQuestionType.penalty
@@ -61,8 +75,13 @@ class MilitaryServiceLawService:
             return MilitaryQuestionType.standards
         return MilitaryQuestionType.general
 
-    def answer_question(self, question: str, contexts: list[dict]) -> str | None:
-        question_type = self.classify_question(question)
+    def answer_question(
+        self,
+        question: str,
+        contexts: list[dict],
+        question_type: MilitaryQuestionType | None = None,
+    ) -> str | None:
+        question_type = question_type or self.classify_question(question)
         if question_type == MilitaryQuestionType.non_military:
             return None
 
@@ -90,6 +109,8 @@ class MilitaryServiceLawService:
                 "Miễn gọi nhập ngũ áp dụng cho các nhóm như con liệt sĩ, con thương binh hạng một, một anh hoặc một em trai của liệt sĩ, một con của thương binh hạng hai hoặc bệnh binh/người nhiễm chất độc da cam suy giảm khả năng lao động từ 81% trở lên, và một số trường hợp công tác ở vùng đặc biệt khó khăn.",
                 "Theo bản hợp nhất mới sau Luật 98/2025/QH15, thẩm quyền quyết định tạm hoãn hoặc miễn gọi nhập ngũ thuộc Chủ tịch Ủy ban nhân dân cấp tỉnh.",
             ]
+            if "con mot" in self._fold_text(question):
+                lines.insert(1, "Chỉ là con một thì không tự động được miễn gọi nhập ngũ; cần xem có thuộc căn cứ tạm hoãn/miễn cụ thể hay không, ví dụ là lao động duy nhất trực tiếp nuôi dưỡng thân nhân đủ điều kiện.")
         elif question_type == MilitaryQuestionType.eyesight:
             lines = [
                 "Về mắt/cận thị, không nên kết luận chỉ dựa vào số độ cận; cần kết luận phân loại sức khỏe của Hội đồng khám sức khỏe.",
@@ -119,6 +140,16 @@ class MilitaryServiceLawService:
                 "Công dân được gọi nhập ngũ khi đáp ứng các tiêu chuẩn chính: lý lịch rõ ràng, chấp hành nghiêm chính sách pháp luật, đủ sức khỏe phục vụ tại ngũ và có trình độ văn hóa phù hợp.",
                 "Riêng sức khỏe được kết luận theo Hội đồng khám sức khỏe và tiêu chuẩn tại Văn bản hợp nhất 88/VBHN-BQP năm 2025.",
             ]
+        elif question_type == MilitaryQuestionType.female:
+            lines = [
+                "Công dân nữ trong độ tuổi thực hiện nghĩa vụ quân sự nếu tự nguyện và Quân đội có nhu cầu thì có thể được phục vụ tại ngũ.",
+                "Nói cách khác, nữ không thuộc diện gọi nhập ngũ bắt buộc như công dân nam trong thời bình, nhưng có thể đăng ký tự nguyện nếu đáp ứng tiêu chuẩn và nhu cầu tuyển chọn.",
+            ]
+        elif question_type == MilitaryQuestionType.discharge:
+            lines = [
+                "Hạ sĩ quan, binh sĩ đã hết thời hạn phục vụ tại ngũ theo Điều 21 thì được xuất ngũ.",
+                "Có thể được xuất ngũ trước thời hạn nếu Hội đồng giám định y khoa quân sự kết luận không đủ sức khỏe để tiếp tục phục vụ tại ngũ hoặc thuộc một số trường hợp gia đình/chính sách theo Điều 41.",
+            ]
         else:
             lines = [
                 "Tôi sẽ trả lời trong phạm vi luật nghĩa vụ quân sự: cần đối chiếu nhóm quy định về độ tuổi, tiêu chuẩn, khám sức khỏe, tạm hoãn/miễn gọi nhập ngũ, lệnh gọi và xử phạt.",
@@ -136,6 +167,13 @@ class MilitaryServiceLawService:
                 lines.append(f"- {item['title']} - {item.get('article') or 'đoạn liên quan'}.")
         lines.append("Lưu ý: đây là hỗ trợ tra cứu pháp luật; trường hợp cụ thể nên đối chiếu quyết định/kết luận của cơ quan quân sự địa phương.")
         return "\n".join(lines)
+
+    @staticmethod
+    def out_of_scope_answer() -> str:
+        return (
+            "Mình hiện chỉ hỗ trợ tra cứu và giải thích trong phạm vi pháp luật về nghĩa vụ quân sự Việt Nam. "
+            "Bạn có thể hỏi các nội dung như độ tuổi nhập ngũ, tạm hoãn/miễn, khám sức khỏe, cận thị, lệnh gọi, xử phạt hoặc xuất ngũ."
+        )
 
     def suggested_articles(self, question_type: MilitaryQuestionType) -> set[str]:
         if question_type == MilitaryQuestionType.age:
@@ -156,6 +194,10 @@ class MilitaryServiceLawService:
             return {"Điều 40"}
         if question_type == MilitaryQuestionType.penalty:
             return {"Điều 6"}
+        if question_type == MilitaryQuestionType.female:
+            return {"Điều 6"}
+        if question_type == MilitaryQuestionType.discharge:
+            return {"Điều 21", "Điều 43"}
         return set()
 
     def is_relevant_context(self, item: dict, question_type: MilitaryQuestionType | None = None) -> bool:
@@ -175,6 +217,8 @@ class MilitaryServiceLawService:
             MilitaryQuestionType.eyesight: ("can thi", "thi luc", "loan thi", "phu luc i"),
             MilitaryQuestionType.exam_call: ("lenh goi kham", "15 ngay", "01 thang 11", "20 ngay"),
             MilitaryQuestionType.penalty: ("phat tien", "khong co mat", "khong chap hanh", "gian doi"),
+            MilitaryQuestionType.female: ("cong dan nu", "tu nguyen", "quan doi co nhu cau"),
+            MilitaryQuestionType.discharge: ("xuat ngu", "het thoi han", "khong du suc khoe"),
         }
         return any(signal in folded for signal in signals.get(question_type, ()))
 

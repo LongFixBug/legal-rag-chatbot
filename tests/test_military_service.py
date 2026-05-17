@@ -66,6 +66,18 @@ def test_military_deferment_authority_uses_latest_2025_law(client):
     assert "cấp huyện" not in answer
 
 
+def test_military_only_child_question_does_not_overstate_exemption(client):
+    seed_military_documents(client)
+
+    response = client.post("/api/chat/query", json={"question": "con một có được miễn nghĩa vụ quân sự không"})
+
+    assert response.status_code == 200
+    answer = response.json()["answer"]
+    assert "không tự động được miễn" in answer
+    assert "lao động duy nhất" in answer
+    assert "đương nhiên được miễn" not in answer
+
+
 def test_military_myopia_question_answers_with_health_caveat(client):
     seed_military_documents(client)
 
@@ -89,3 +101,27 @@ def test_military_exam_penalty_question_answers_directly(client):
     assert "10 đến 12 triệu đồng" in answer
     assert "25 đến 35 triệu đồng" in answer
     assert "Điều 6" in answer
+
+
+def test_military_female_service_question_answers_directly(client):
+    seed_military_documents(client)
+
+    response = client.post("/api/chat/query", json={"question": "con gái có phải đi nghĩa vụ quân sự không"})
+
+    assert response.status_code == 200
+    answer = response.json()["answer"]
+    assert "Công dân nữ" in answer
+    assert "tự nguyện" in answer
+    assert "Quân đội có nhu cầu" in answer
+
+
+def test_military_discharge_question_answers_directly(client):
+    seed_military_documents(client)
+
+    response = client.post("/api/chat/query", json={"question": "khi nào được xuất ngũ"})
+
+    assert response.status_code == 200
+    answer = response.json()["answer"]
+    assert "hết thời hạn phục vụ tại ngũ" in answer
+    assert "Điều 21" in answer
+    assert "Điều 43" in answer

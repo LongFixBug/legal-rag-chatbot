@@ -87,6 +87,16 @@ class DocumentService:
             ingested += 1
         return ingested
 
+    async def reindex_directory(self, directory: Path, include_pattern: str = "*") -> tuple[int, int]:
+        deleted = 0
+        for document in await self.metadata_store.list_documents():
+            if not self._is_directory_source(document.source, directory):
+                continue
+            await self.delete_document(document.id)
+            deleted += 1
+        ingested = await self.ingest_directory(directory, include_pattern)
+        return deleted, ingested
+
     async def list_documents(self) -> list[DocumentRecord]:
         return await self.metadata_store.list_documents()
 
@@ -117,3 +127,12 @@ class DocumentService:
                 )
             )
         return chunks
+
+    @staticmethod
+    def _is_directory_source(source: str, directory: Path) -> bool:
+        try:
+            source_path = Path(source).resolve()
+            directory_path = directory.resolve()
+            return source_path.is_relative_to(directory_path)
+        except (OSError, RuntimeError, ValueError):
+            return False

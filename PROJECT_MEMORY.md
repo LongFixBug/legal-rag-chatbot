@@ -221,6 +221,20 @@ Live Docker flow was also verified for:
 - Tightened runtime preload to `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su-curated-*.txt`
   and renamed the clean corpus files with a `curated` prefix so Docker/demo no
   longer indexes raw OCR or `pdftotext` output by accident.
+- Added `/api/documents/reindex` and Streamlit reindex controls so preload data
+  can be refreshed cleanly instead of accumulating stale OCR/index chunks.
+- Simplified the active RAG runtime to the military-service-law domain only:
+  out-of-scope questions now receive a scope message, and legacy tax-specific
+  runtime helpers/import scripts were removed.
+- Hid debug details such as retrieval scores, chunk count, and conversation id
+  behind Streamlit debug toggles, while keeping citations visible as readable
+  legal grounds.
+- Expanded military-service eval coverage for female service, discharge, only
+  child/deferment, and out-of-scope behavior; updated smoke tests and generator
+  defaults around the military-service demo scope.
+- Latest validation after the military-only hardening pass:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `55 passed, 1 skipped`;
+  `python3 -m compileall app streamlit_app scripts tests` also passed.
 
 ## Change Guidance
 

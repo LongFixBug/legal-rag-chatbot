@@ -18,8 +18,9 @@
 - Citation validation để phát hiện dẫn chiếu không nằm trong ngữ cảnh truy xuất
 - Ingest file `txt`, `md`, `html`, `htm`, `pdf`
 - Adapter tách biệt cho local và production store
-- Corpus demo mặc định chỉ preload các file `nghia-vu-quan-su*.txt`
+- Corpus demo mặc định chỉ preload các file `nghia-vu-quan-su-curated-*.txt`
 - Direct-answer layer riêng cho câu hỏi nghĩa vụ quân sự thường gặp
+- Endpoint reindex sạch để xoá dữ liệu preload cũ rồi nạp lại corpus curated
 
 ## Cấu trúc quan trọng
 
@@ -73,7 +74,7 @@ docker compose --profile llama up --build
 Biến quan trọng trong [`.env.example`](/Users/nguyenhailong/Documents/Chat-bot-RAG-full/.env.example):
 
 - `DATABASE_URL`: bật PostgreSQL metadata/chat history
-- `PRELOAD_INCLUDE_PATTERN`: mặc định `nghia-vu-quan-su*.txt` để demo chỉ nạp corpus nghĩa vụ quân sự
+- `PRELOAD_INCLUDE_PATTERN`: mặc định `nghia-vu-quan-su-curated-*.txt` để demo chỉ nạp corpus nghĩa vụ quân sự đã làm sạch
 - `QDRANT_URL`: bật vector store Qdrant
 - `QDRANT_COLLECTION`: nên giữ `legal_chunks_qwen3` cho bộ embedding hiện tại
 - `LLM_BASE_URL`, `LLM_MODEL`: trỏ tới `llama.cpp` chat server
@@ -87,7 +88,7 @@ Lưu ý:
 - `.env.example` dùng cổng PostgreSQL host là `5433` để khớp với `docker-compose.yml`
 - embedding hiện tại dùng chiều vector `1024`; nếu đổi model hoặc dimension thì cần reindex và nên dùng collection Qdrant mới
 - với `llama.cpp`, `LLM_MODEL` và `EMBEDDING_MODEL` nên đặt đúng theo `id` từ `/v1/models`, hiện tại là tên file `.gguf`
-- nếu muốn preload toàn bộ file cũ trong `data/`, đổi `PRELOAD_INCLUDE_PATTERN="*.txt"`
+- text/PDF trích xuất thô được giữ trong `data/raw/` để đối chiếu, không dùng làm corpus preload
 
 ## API chính
 
@@ -97,6 +98,7 @@ Lưu ý:
 - `POST /api/documents/ingest`
 - `POST /api/documents/upload`
 - `POST /api/documents/preload`
+- `POST /api/documents/reindex`
 - `POST /api/chat/query`
 - `GET /api/legal/search`
 
@@ -141,7 +143,7 @@ make eval
 Eval đang tách ba nhóm:
 - `retrieval`: câu hỏi phải kéo đúng văn bản/chunk
 - `answer`: câu trả lời phải có cụm bắt buộc và tránh cụm sai đã biết
-- `calculation`: phép tính pháp lý như thuế trúng thưởng phải ra đúng số trong bộ legacy eval
+- `calculation`: hiện để trống vì demo đã khóa phạm vi vào nghĩa vụ quân sự, không còn chạy domain thuế
 
 Khi thêm nhiều văn bản luật mới, có thể sinh bản nháp eval trước:
 
@@ -154,5 +156,19 @@ Lệnh này ghi `evals/generated_candidates.json` từ các file `data/*.txt`. F
 Để sinh nháp cho một văn bản cụ thể:
 
 ```bash
-uv run python scripts/generate_eval_candidates.py --file nghia-vu-quan-su-2015.txt
+uv run python scripts/generate_eval_candidates.py --file nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt
+```
+
+## Cập nhật nguồn nghĩa vụ quân sự
+
+Tải lại PDF nguồn chính thức vào `data/raw/nghia-vu-quan-su/`:
+
+```bash
+uv run python scripts/import_military_docs.py
+```
+
+Nếu muốn thử trích xuất text thô để đối chiếu:
+
+```bash
+uv run python scripts/import_military_docs.py --extract-text
 ```

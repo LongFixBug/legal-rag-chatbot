@@ -1,11 +1,20 @@
 import streamlit as st
 
-from streamlit_app.utils import get_documents, ingest_document, preload_samples, upload_document
+from streamlit_app.utils import get_documents, ingest_document, preload_samples, reindex_samples, upload_document
 
 st.title("Quản lý văn bản")
-if st.button("Nạp dữ liệu mẫu"):
-    result = preload_samples()
-    st.success(f"Đã nạp thêm {result['documents_ingested']} văn bản mẫu.")
+left, right = st.columns(2)
+with left:
+    if st.button("Nạp thêm dữ liệu mẫu"):
+        result = preload_samples()
+        st.success(f"Đã nạp thêm {result['documents_ingested']} văn bản mẫu.")
+with right:
+    if st.button("Reindex sạch dữ liệu mẫu"):
+        result = reindex_samples()
+        st.success(
+            f"Đã xoá {result['documents_deleted']} văn bản preload cũ và nạp lại "
+            f"{result['documents_ingested']} văn bản sạch."
+        )
 
 st.subheader("Nạp file")
 uploaded_file = st.file_uploader("Chọn file txt/md/html/pdf", type=["txt", "md", "html", "htm", "pdf"])

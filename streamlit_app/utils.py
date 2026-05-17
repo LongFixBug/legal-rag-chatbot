@@ -85,3 +85,9 @@ def preload_samples() -> dict:
     response = httpx.post(f"{API_BASE_URL}/documents/preload", timeout=60.0)
     response.raise_for_status()
     return response.json()
+
+
+def reindex_samples() -> dict:
+    response = httpx.post(f"{API_BASE_URL}/documents/reindex", timeout=120.0)
+    response.raise_for_status()
+    return response.json()
