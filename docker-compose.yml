@@ -40,7 +40,7 @@ services:
       APP_VERSION: 0.2.0
       API_PREFIX: /api
       DATA_DIR: /app/data
-      PRELOAD_INCLUDE_PATTERN: nghia-vu-quan-su*.txt
+      PRELOAD_INCLUDE_PATTERN: nghia-vu-quan-su-curated-*.txt
       STORAGE_DIR: /app/.storage
       PRELOAD_SAMPLE_DATA: "true"
       EMBEDDING_DIMENSION: "1024"

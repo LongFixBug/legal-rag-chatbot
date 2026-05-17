@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     storage_dir: Path = Field(default=Path(".storage"))
     data_dir: Path = Field(default=Path("data"))
     preload_sample_data: bool = True
-    preload_include_pattern: str = "nghia-vu-quan-su*.txt"
+    preload_include_pattern: str = "nghia-vu-quan-su-curated-*.txt"
     embedding_dimension: int = Field(default=1024, gt=0)
     top_k: int = Field(default=4, ge=1)
     max_history_messages: int = Field(default=6, ge=0)

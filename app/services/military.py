@@ -88,16 +88,17 @@ class MilitaryServiceLawService:
                 "Tạm hoãn và miễn gọi nhập ngũ là hai nhóm khác nhau.",
                 "Tạm hoãn thường áp dụng cho các trường hợp như chưa đủ sức khỏe, là lao động duy nhất trực tiếp nuôi thân nhân không còn khả năng lao động hoặc chưa đến tuổi lao động, đang học phổ thông/đại học/cao đẳng hệ chính quy trong một khóa đào tạo, hoặc một số trường hợp gia đình/chính sách khác.",
                 "Miễn gọi nhập ngũ áp dụng cho các nhóm như con liệt sĩ, con thương binh hạng một, một anh hoặc một em trai của liệt sĩ, một con của thương binh hạng hai hoặc bệnh binh/người nhiễm chất độc da cam suy giảm khả năng lao động từ 81% trở lên, và một số trường hợp công tác ở vùng đặc biệt khó khăn.",
+                "Theo bản hợp nhất mới sau Luật 98/2025/QH15, thẩm quyền quyết định tạm hoãn hoặc miễn gọi nhập ngũ thuộc Chủ tịch Ủy ban nhân dân cấp tỉnh.",
             ]
         elif question_type == MilitaryQuestionType.eyesight:
             lines = [
                 "Về mắt/cận thị, không nên kết luận chỉ dựa vào số độ cận; cần kết luận phân loại sức khỏe của Hội đồng khám sức khỏe.",
-                "Theo bảng phân loại trong Thông tư 105/2023/TT-BQP: cận dưới -3D được chấm theo thị lực sau chỉnh kính và tăng 1 điểm; cận từ -3D đến dưới -4D là điểm 4; từ -4D đến dưới -5D là điểm 5; từ -5D trở lên là điểm 6.",
+                "Theo Văn bản hợp nhất 88/VBHN-BQP năm 2025: cận dưới -3D được chấm theo thị lực sau chỉnh kính; cận từ -3D đến dưới -4D là điểm 4; từ -4D đến dưới -5D là điểm 5; từ -5D trở lên là điểm 6.",
                 "Tiêu chuẩn chung để tuyển chọn thực hiện nghĩa vụ quân sự là sức khỏe loại 1, loại 2 hoặc loại 3; vì vậy các mức bị chấm điểm 4, 5, 6 thường là tín hiệu không đạt tiêu chuẩn chung, nhưng kết luận cuối cùng vẫn thuộc Hội đồng khám sức khỏe.",
             ]
         elif question_type == MilitaryQuestionType.health:
             lines = [
-                "Tiêu chuẩn sức khỏe thực hiện nghĩa vụ quân sự hiện hành dựa trên Thông tư 105/2023/TT-BQP.",
+                "Tiêu chuẩn sức khỏe thực hiện nghĩa vụ quân sự hiện hành dựa trên Văn bản hợp nhất 88/VBHN-BQP năm 2025, hợp nhất Thông tư 105/2023/TT-BQP và các sửa đổi mới.",
                 "Tiêu chuẩn chung là đạt sức khỏe loại 1, loại 2 hoặc loại 3 theo quy định phân loại sức khỏe.",
                 "Nếu chưa đủ sức khỏe phục vụ tại ngũ theo kết luận của Hội đồng khám sức khỏe thì thuộc nhóm có thể được tạm hoãn gọi nhập ngũ.",
             ]
@@ -116,7 +117,7 @@ class MilitaryServiceLawService:
         elif question_type == MilitaryQuestionType.standards:
             lines = [
                 "Công dân được gọi nhập ngũ khi đáp ứng các tiêu chuẩn chính: lý lịch rõ ràng, chấp hành nghiêm chính sách pháp luật, đủ sức khỏe phục vụ tại ngũ và có trình độ văn hóa phù hợp.",
-                "Riêng sức khỏe được kết luận theo Hội đồng khám sức khỏe và tiêu chuẩn của Thông tư 105/2023/TT-BQP.",
+                "Riêng sức khỏe được kết luận theo Hội đồng khám sức khỏe và tiêu chuẩn tại Văn bản hợp nhất 88/VBHN-BQP năm 2025.",
             ]
         else:
             lines = [
@@ -160,7 +161,8 @@ class MilitaryServiceLawService:
     def is_relevant_context(self, item: dict, question_type: MilitaryQuestionType | None = None) -> bool:
         folded = self._fold_text(f"{item.get('title', '')} {item.get('article') or ''} {item.get('content', '')}")
         if not any(term in folded for term in ("nghia vu quan su", "nhap ngu", "kham suc khoe", "thong tu 105", "nghi dinh 120")):
-            return False
+            if not any(term in folded for term in ("vbhn-vpqh", "vbhn-bqp", "thong tu 106", "luat 98/2025")):
+                return False
         if question_type is None or question_type == MilitaryQuestionType.general:
             return True
         signals = {

@@ -1,25 +1,17 @@
 Dữ liệu mẫu trong thư mục này phục vụ demo và test cho chatbot RAG pháp lý.
 
-Corpus demo mặc định hiện tập trung vào luật nghĩa vụ quân sự:
-- `nghia-vu-quan-su-2015.txt`
-- `nghia-vu-quan-su-kham-suc-khoe-105-2023.txt`
-- `nghia-vu-quan-su-xu-phat-120-2013-37-2022.txt`
+Corpus demo mặc định hiện tập trung vào luật nghĩa vụ quân sự Việt Nam:
+- `nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt`: bản tóm tắt sạch theo Văn bản hợp nhất 80/VBHN-VPQH năm 2025.
+- `nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt`: bản tóm tắt sạch theo Văn bản hợp nhất 88/VBHN-BQP năm 2025.
+- `nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt`: bản tóm tắt sạch theo Văn bản hợp nhất 04/VBHN-BQP về xử phạt.
 
-Các file cũ vẫn được giữ để test hồi quy và tham khảo kỹ thuật:
-- các văn bản pháp luật mẫu ban đầu để test luồng RAG
-- bộ thuế thu nhập cá nhân cho người lao động:
-  `Luật 109/2025/QH15`, `Nghị quyết 110/2025/UBTVQH15`,
-  `VBHN 04/2007/QH12 + 26/2012/QH13`, `Nghị định 65/2013/NĐ-CP`,
-  `Thông tư 111/2013/TT-BTC`
+Các PDF tải từ nguồn chính thức được lưu tại:
+- `data/raw/nghia-vu-quan-su/`
 
-Importer hỗ trợ nạp lại bộ văn bản thuế từ nguồn chính thức:
-
-```bash
-uv run python scripts/import_worker_tax_docs.py
-```
+Một số PDF Công báo là dạng scan hoặc có lớp text yếu, nên bản `pdftotext` có thể chỉ chứa header/footer hoặc vỡ layout. Các bản trích xuất thô được đặt trong `data/raw/nghia-vu-quan-su/text-*.txt` hoặc `extracted-*.txt` để đối chiếu, không dùng làm corpus preload.
 
 Lưu ý:
 - `data/README.md` chỉ là tài liệu hướng dẫn và đã được loại khỏi `preload`
-- Docker/app mặc định dùng `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su*.txt`,
-  nên chỉ preload corpus nghĩa vụ quân sự cho demo
+- Docker/app mặc định dùng `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su-curated-*.txt`,
+  nên chỉ preload corpus nghĩa vụ quân sự đã được làm sạch cho demo
 - khi thêm hoặc thay đổi nguồn dữ liệu, cần gọi lại `POST /api/documents/preload`

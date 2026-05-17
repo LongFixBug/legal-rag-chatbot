@@ -1,0 +1,25 @@
+Văn bản hợp nhất 88/VBHN-BQP năm 2025 về tiêu chuẩn sức khỏe, khám sức khỏe thuộc phạm vi quản lý của Bộ Quốc phòng
+Nguồn chính thức: https://congbao.chinhphu.vn/van-ban/van-ban-hop-nhat-so-88-vbhn-bqp-46656.htm
+Ghi chú: Đây là bản tóm tắt sạch để RAG truy xuất nhanh. Văn bản hợp nhất 88/VBHN-BQP ngày 17/11/2025 hợp nhất Thông tư 105/2023/TT-BQP và nội dung sửa đổi, bổ sung mới, trong đó có Thông tư 106/2025/TT-BQP.
+
+Điều 3. Giải thích từ ngữ về khám sức khỏe nghĩa vụ quân sự.
+Sơ tuyển sức khỏe nghĩa vụ quân sự là việc kiểm tra, đánh giá sơ bộ sức khỏe đối với công dân được gọi khám sức khỏe trước mỗi đợt tuyển chọn và gọi nhập ngũ. Khám sức khỏe nghĩa vụ quân sự là việc khám, phân loại và kết luận sức khỏe đối với công dân được gọi thực hiện nghĩa vụ quân sự do Hội đồng khám sức khỏe thực hiện.
+
+Điều 4. Tiêu chuẩn sức khỏe thực hiện nghĩa vụ quân sự.
+Tiêu chuẩn chung để tuyển chọn thực hiện nghĩa vụ quân sự là đạt sức khỏe loại 1, loại 2 hoặc loại 3 theo quy định phân loại sức khỏe. Không gọi nhập ngũ đối với công dân nghiện các chất ma túy, tiền chất ma túy theo danh mục do Chính phủ quy định. Một số tiêu chuẩn sức khỏe riêng trong tuyển chọn thực hiện nghĩa vụ quân sự do Bộ trưởng Bộ Quốc phòng quy định.
+
+Điều 5. Điểm sức khỏe.
+Mỗi chỉ tiêu sức khỏe được cho điểm từ 1 đến 6. Điểm 1 là tình trạng rất tốt; điểm 2 là tốt; điểm 3 là khá; điểm 4 là trung bình; điểm 5 là kém; điểm 6 là rất kém.
+
+Điều 6. Phân loại sức khỏe.
+Sức khỏe loại 1 là tất cả các chỉ tiêu đều đạt điểm 1. Sức khỏe loại 2 có ít nhất một chỉ tiêu bị điểm 2. Sức khỏe loại 3 có ít nhất một chỉ tiêu bị điểm 3. Sức khỏe loại 4, loại 5, loại 6 tương ứng là có ít nhất một chỉ tiêu bị điểm 4, điểm 5 hoặc điểm 6. Vì tiêu chuẩn chung tuyển nghĩa vụ quân sự là loại 1, 2 hoặc 3, nên nếu một bệnh hoặc chỉ tiêu bị điểm 4, 5 hoặc 6 thì thường không đạt tiêu chuẩn chung, trừ khi có tiêu chuẩn riêng khác được cơ quan có thẩm quyền áp dụng.
+
+Điều 8. Khám sức khỏe nghĩa vụ quân sự.
+Hội đồng khám sức khỏe tổ chức khám, phân loại và kết luận sức khỏe đối với công dân được gọi thực hiện nghĩa vụ quân sự. Nội dung khám gồm thể lực, lâm sàng, cận lâm sàng khi cần thiết và các nội dung chuyên môn theo quy định.
+
+Điều 10. Giám định sức khỏe nghĩa vụ quân sự.
+Khi có khiếu nại liên quan đến sức khỏe, Hội đồng giám định y khoa có thẩm quyền giám định sức khỏe nghĩa vụ quân sự theo đề nghị của Hội đồng nghĩa vụ quân sự. Kết luận giám định xác định rõ tình trạng bệnh tật và phân loại sức khỏe; kết luận giám định là căn cứ xử lý khiếu nại về sức khỏe nghĩa vụ quân sự.
+
+Phụ lục I. Phân loại sức khỏe về mắt và cận thị.
+Về thị lực không kính, bảng phân loại dùng thị lực mắt phải và tổng thị lực hai mắt để chấm điểm. Về cận thị: cận thị dưới -3D được chấm theo thị lực sau chỉnh kính; cận thị từ -3D đến dưới -4D chấm điểm 4; cận thị từ -4D đến dưới -5D chấm điểm 5; cận thị từ -5D trở lên chấm điểm 6. Cận thị đã phẫu thuật được chấm theo thị lực không kính và tăng thêm 1 điểm.
+Về viễn thị: viễn thị dưới +1,5D được chấm theo thị lực không kính; viễn thị từ +1,5D đến dưới +3D chấm điểm 4; từ +3D đến dưới +4D chấm điểm 5; từ +4D đến dưới +5D chấm điểm 6. Về loạn thị: loạn thị sinh lý hoặc dưới 1D chấm điểm 2; loạn thị từ 1D trở lên chấm điểm 3; loạn thị đã phẫu thuật và hết loạn thị được chấm theo thị lực không kính và tăng thêm 1 điểm.

@@ -195,10 +195,7 @@ Live Docker flow was also verified for:
   `env UV_CACHE_DIR=.uv-cache INCLUDE_GENERATED_EVALS=1 GENERATED_EVAL_CASES_PATH=evals/generated_cases.json uv run pytest tests/test_quality_eval.py -q`
   passed with `589 passed`.
 - Pivoted the demo scope from broad legal/tax Q&A to a focused Vietnamese
-  military-service-law chatbot. Runtime preload now defaults to
-  `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su*.txt` so Docker/demo loads the
-  military-service corpus first while legacy corpora remain available for
-  regression tests.
+  military-service-law chatbot.
 - Added military-service corpus files covering Luật Nghĩa vụ quân sự 2015,
   Thông tư 105/2023/TT-BQP health/eyesight standards, and the administrative
   penalty flow from Nghị định 120/2013/NĐ-CP as amended by Nghị định
@@ -209,6 +206,21 @@ Live Docker flow was also verified for:
 - Updated Streamlit and README messaging for the military-service-law demo.
 - Latest validation after the military-service pivot:
   `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with `59 passed`.
+- Downloaded official military-service-law source documents from Công báo into
+  `data/raw/nghia-vu-quan-su/`, including VBHN 80/VBHN-VPQH, Law
+  98/2025/QH15, VBHN 36/VBHN-BQP, VBHN 88/VBHN-BQP, VBHN 75/VBHN-BQP,
+  VBHN 76/VBHN-BQP, VBHN 40/VBHN-BQP, and VBHN 04/VBHN-BQP.
+- Updated the preload corpus summaries for military service law to reflect the
+  latest 2025 consolidated texts, especially Article 42 authority now being
+  Chủ tịch UBND cấp tỉnh after Law 98/2025/QH15.
+- Kept low-quality text extracted from scanned/source-weak PDFs under
+  `data/raw/nghia-vu-quan-su/extracted-*.txt` so the app does not preload those
+  noisy chunks into the RAG index.
+- Narrowed the default legal quality eval suite to military-service-law cases
+  so it matches the current focused demo scope and the remaining data corpus.
+- Tightened runtime preload to `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su-curated-*.txt`
+  and renamed the clean corpus files with a `curated` prefix so Docker/demo no
+  longer indexes raw OCR or `pdftotext` output by accident.
 
 ## Change Guidance
 
