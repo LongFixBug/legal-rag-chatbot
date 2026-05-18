@@ -3,7 +3,7 @@ SHELL := /bin/bash
 COMPOSE := docker compose
 COMPOSE_LLAMA := $(COMPOSE) --profile llama
 
-.PHONY: help sync test eval eval-generate import-military smoke up down restart ps logs logs-api logs-streamlit health ready
+.PHONY: help sync test eval eval-generate import-military migrate smoke up down restart ps logs logs-api logs-streamlit health ready
 
 help:
 	@printf "Available targets:\n"
@@ -12,6 +12,7 @@ help:
 	@printf "  make eval          Run legal RAG quality evals\n"
 	@printf "  make eval-generate Generate draft eval candidates from data/*.txt\n"
 	@printf "  make import-military Download official military-service-law source PDFs\n"
+	@printf "  make migrate       Run Alembic database migrations using DATABASE_URL\n"
 	@printf "  make smoke         Run runtime smoke test against the local API\n"
 	@printf "  make up            Start full Docker stack with llama profile\n"
 	@printf "  make down          Stop Docker stack\n"
@@ -37,6 +38,9 @@ eval-generate:
 
 import-military:
 	uv run python scripts/import_military_docs.py
+
+migrate:
+	bash scripts/migrate_db.sh
 
 smoke:
 	bash scripts/smoke_test.sh

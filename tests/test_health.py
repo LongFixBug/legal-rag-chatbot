@@ -67,3 +67,18 @@ def test_health_readiness_returns_200_degraded_when_fallback_keeps_service_opera
     assert payload["ready"] is True
     assert payload["checks"]["llm"]["operational"] is True
     assert payload["checks"]["embedding"]["operational"] is True
+
+
+def test_request_id_header_and_metrics_are_recorded(client):
+    response = client.get("/health", headers={"X-Request-ID": "test-request-id"})
+    assert response.status_code == 200
+    assert response.headers["X-Request-ID"] == "test-request-id"
+
+    metrics = client.get("/health/metrics")
+    assert metrics.status_code == 200
+    payload = metrics.json()
+
+    assert payload["total_requests"] >= 1
+    assert payload["status_codes"]["200"] >= 1
+    assert payload["paths"]["/health"]["count"] >= 1
+    assert payload["paths"]["/health"]["avg_latency_ms"] >= 0

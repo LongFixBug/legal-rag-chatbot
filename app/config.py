@@ -21,6 +21,16 @@ class Settings(BaseSettings):
     title_match_boost: float = Field(default=0.2, ge=0.0)
     min_retrieval_confidence: float = Field(default=0.2, ge=0.0, le=1.0)
     admin_token: str = ""
+    rate_limit_enabled: bool = True
+    chat_rate_limit_per_minute: int = Field(default=30, ge=0)
+    document_mutation_rate_limit_per_minute: int = Field(default=12, ge=0)
+    max_upload_bytes: int = Field(default=5_242_880, gt=0)
+    allowed_upload_extensions: str = ".txt,.md,.html,.htm,.pdf"
+    allowed_upload_mime_types: str = "text/plain,text/markdown,text/html,application/pdf"
+    parser_version: str = "parser.v1"
+    chunking_version: str = "legal-article-chunker.v1"
+    uploaded_document_retention_days: int = Field(default=0, ge=0)
+    chat_history_retention_days: int = Field(default=0, ge=0)
 
     database_url: str = ""
     qdrant_url: str = ""

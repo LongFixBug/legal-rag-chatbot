@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import uuid
+from hashlib import sha256
 from pathlib import Path
 
+from app.config import Settings
 from app.db.interfaces import MetadataStore, VectorStore
 from app.db.models import ChunkRecord, DocumentRecord
 from app.schemas.document import DocumentIngestRequest
@@ -21,6 +23,7 @@ class DocumentService:
         legal_text_service: LegalTextService,
         citation_service: CitationService,
         parser_service: DocumentParserService,
+        settings: Settings,
     ):
         self.metadata_store = metadata_store
         self.vector_store = vector_store
@@ -28,8 +31,16 @@ class DocumentService:
         self.legal_text_service = legal_text_service
         self.citation_service = citation_service
         self.parser_service = parser_service
+        self.settings = settings
 
     async def ingest_document(self, request: DocumentIngestRequest) -> tuple[DocumentRecord, int]:
+        content_hash = self._content_sha256(request.content)
+        identity_key = f"sha256:{content_hash}"
+        existing = await self._find_existing_document(identity_key)
+        if existing is not None:
+            chunks = await self.metadata_store.list_chunks(existing.id)
+            return existing, len(chunks)
+
         title = self.legal_text_service.guess_title(request.content, request.title)
         document = DocumentRecord(
             id=str(uuid.uuid4()),
@@ -37,7 +48,15 @@ class DocumentService:
             source=request.source,
             doc_type=request.doc_type,
             summary=self.legal_text_service.summarize(request.content),
-            metadata={"manual_title": request.title},
+            metadata={
+                "manual_title": request.title,
+                "content_sha256": content_hash,
+                "identity_key": identity_key,
+                "parser_version": self.settings.parser_version,
+                "chunking_version": self.settings.chunking_version,
+                "embedding_dimension": self.settings.embedding_dimension,
+                "qdrant_collection": self.settings.qdrant_collection,
+            },
         )
         await self.metadata_store.upsert_document(document)
         chunks = await self._build_chunks(document.id, request.content)
@@ -108,6 +127,12 @@ class DocumentService:
         await self.vector_store.delete_by_document(document_id)
         return True
 
+    async def _find_existing_document(self, identity_key: str) -> DocumentRecord | None:
+        for document in await self.metadata_store.list_documents():
+            if document.metadata.get("identity_key") == identity_key:
+                return document
+        return None
+
     async def _build_chunks(self, document_id: str, content: str) -> list[ChunkRecord]:
         chunks: list[ChunkRecord] = []
         for raw_chunk in self.legal_text_service.split_legal_text(content):
@@ -136,3 +161,8 @@ class DocumentService:
             return source_path.is_relative_to(directory_path)
         except (OSError, RuntimeError, ValueError):
             return False
+
+    @staticmethod
+    def _content_sha256(content: str) -> str:
+        normalized = "\n".join(line.rstrip() for line in content.strip().splitlines())
+        return sha256(normalized.encode("utf-8")).hexdigest()

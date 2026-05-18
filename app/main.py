@@ -5,16 +5,22 @@ from fastapi import FastAPI, Request, Response, status
 from app.api.chat import router as chat_router
 from app.api.documents import router as documents_router
 from app.api.legal import router as legal_router
+from app.api.maintenance import router as maintenance_router
 from app.config import get_settings
+from app.observability import InMemoryMetrics, configure_logging, get_metrics, observability_middleware
+from app.services.rate_limit import FixedWindowRateLimiter
 from app.services.registry import build_services
 
 settings = get_settings()
+configure_logging()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     services = await build_services()
     app.state.services = services
+    app.state.rate_limiter = FixedWindowRateLimiter()
+    app.state.metrics = InMemoryMetrics()
     if services.settings.preload_sample_data and not await services.documents.list_documents():
         await services.documents.ingest_directory(
             services.settings.data_dir,
@@ -25,9 +31,11 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title=settings.app_name, version=settings.app_version, lifespan=lifespan)
+app.middleware("http")(observability_middleware)
 app.include_router(chat_router, prefix=settings.api_prefix)
 app.include_router(documents_router, prefix=settings.api_prefix)
 app.include_router(legal_router, prefix=settings.api_prefix)
+app.include_router(maintenance_router, prefix=settings.api_prefix)
 
 
 @app.get("/")
@@ -53,3 +61,8 @@ async def health_ready(request: Request, response: Response) -> dict[str, object
         "ready": ready,
         "checks": checks,
     }
+
+
+@app.get("/health/metrics")
+async def health_metrics(request: Request) -> dict[str, object]:
+    return get_metrics(request).snapshot()

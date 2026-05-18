@@ -66,6 +66,17 @@ def test_chat_abstains_when_retrieved_context_is_not_relevant_enough(client):
     assert "Chưa tìm thấy căn cứ đủ mạnh" in payload["answer"]
 
 
+def test_chat_query_is_rate_limited_when_configured(client):
+    client.app.state.services.settings.chat_rate_limit_per_minute = 1
+
+    first = client.post("/api/chat/query", json={"question": "thuế thu nhập cá nhân là gì"})
+    assert first.status_code == 200
+
+    second = client.post("/api/chat/query", json={"question": "thuế thu nhập cá nhân là gì"})
+    assert second.status_code == 429
+    assert "Rate limit exceeded" in second.json()["detail"]
+
+
 def test_chat_uses_history_with_same_conversation(client):
     client.post("/api/documents/preload")
     first = client.post("/api/chat/query", json={"question": "bao nhiêu tuổi thì đi nghĩa vụ quân sự?"})

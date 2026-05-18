@@ -7,13 +7,18 @@ from app.schemas.chat import (
     ConversationResponse,
     CreateConversationRequest,
 )
+from app.security import enforce_chat_rate_limit
 from app.services.registry import AppServices, get_services
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("/query", response_model=ChatResponse)
-async def query_chat(request: ChatRequest, services: AppServices = Depends(get_services)) -> ChatResponse:
+async def query_chat(
+    request: ChatRequest,
+    _: None = Depends(enforce_chat_rate_limit),
+    services: AppServices = Depends(get_services),
+) -> ChatResponse:
     return await services.rag.chat(request.question, top_k=request.top_k, conversation_id=request.conversation_id)
 
 

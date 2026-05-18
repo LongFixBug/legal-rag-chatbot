@@ -14,6 +14,7 @@ from app.services.document import DocumentService
 from app.services.embedding import build_embedding_service
 from app.services.legal import LegalTextService
 from app.services.llm import build_llm_service
+from app.services.maintenance import MaintenanceService
 from app.services.parser import DocumentParserService
 from app.services.rag import RagService
 
@@ -27,6 +28,7 @@ class AppServices:
     llm_service: Any
     documents: DocumentService
     rag: RagService
+    maintenance: MaintenanceService
 
     async def close(self) -> None:
         await self.vector_store.close()
@@ -66,6 +68,7 @@ async def build_services() -> AppServices:
         legal_text_service=legal_text_service,
         citation_service=citation_service,
         parser_service=parser_service,
+        settings=settings,
     )
     rag_service = RagService(
         settings=settings,
@@ -76,6 +79,11 @@ async def build_services() -> AppServices:
         citation_service=citation_service,
         legal_text_service=legal_text_service,
     )
+    maintenance_service = MaintenanceService(
+        settings=settings,
+        metadata_store=metadata_store,
+        document_service=document_service,
+    )
     return AppServices(
         settings=settings,
         metadata_store=metadata_store,
@@ -84,6 +92,7 @@ async def build_services() -> AppServices:
         llm_service=llm_service,
         documents=document_service,
         rag=rag_service,
+        maintenance=maintenance_service,
     )
 
 

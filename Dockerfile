@@ -9,6 +9,9 @@ WORKDIR /app
 RUN pip install --no-cache-dir uv
 
 COPY pyproject.toml requirements.txt README.md ./
+COPY alembic.ini ./
+COPY alembic ./alembic
+COPY scripts ./scripts
 COPY app ./app
 COPY streamlit_app ./streamlit_app
 COPY data ./data

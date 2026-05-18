@@ -233,6 +233,53 @@ Live Docker flow was also verified for:
   `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with
   `107 passed, 1 skipped`; `python3 -m compileall app streamlit_app tests`
   passed; `docker build -t legal-rag-chatbot:ci .` passed.
+- Continued production roadmap Phase 2 hardening:
+  added in-memory fixed-window rate limiting for chat and document mutation
+  endpoints, plus upload extension, MIME type, and size allowlists.
+- Added `SECURITY.md` to document current auth/rate/upload boundaries and
+  remaining public-deployment security work.
+- Started Phase 4 observability:
+  added request-id propagation through `X-Request-ID`, structured request log
+  lines, and a lightweight `/health/metrics` endpoint with request counts,
+  status-code counts, and per-path latency summaries.
+- Added `RUNBOOK.md` for common operational issues: weak answers, empty Qdrant,
+  PostgreSQL down, llama timeout/model mismatch, upload failures, rate limits,
+  and rollback.
+- Latest validation after Phase 2/4 continuation:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with
+  `112 passed, 1 skipped`; `python3 -m compileall app streamlit_app tests`
+  passed; `docker build -t legal-rag-chatbot:ci .` passed.
+- Continued Phase 3 data/schema management:
+  document ingest now stores stable identity/version metadata
+  (`content_sha256`, `identity_key`, parser/chunking version, embedding
+  dimension, and Qdrant collection) and reuses an existing document when the
+  same content is ingested again.
+- Added retention lifecycle controls with
+  `UPLOADED_DOCUMENT_RETENTION_DAYS` and `CHAT_HISTORY_RETENTION_DAYS`, plus
+  `/api/maintenance/retention/purge` guarded by admin token and mutation rate
+  limiting.
+- Added `scripts/backup_data.sh` and `scripts/restore_data.sh` as the first
+  operational backup/restore procedure for PostgreSQL metadata/chat history and
+  Qdrant vector storage.
+- Latest validation after Phase 3 continuation:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with
+  `116 passed, 1 skipped`; `python3 -m compileall app streamlit_app tests`
+  passed; `docker build -t legal-rag-chatbot:ci .` passed.
+- Added Alembic as the PostgreSQL schema migration path with
+  `alembic.ini`, `alembic/env.py`, and initial revision
+  `0001_initial_schema` for documents, chunks, conversations, and chat
+  messages.
+- Added `scripts/migrate_db.sh` and `make migrate`; new PostgreSQL
+  environments should run migrations before startup/ingest, while existing
+  create_all-era databases can be baselined with `alembic stamp head` after
+  schema review.
+- Added `RELEASE.md` with pre-release checks, image tagging guidance,
+  deployment order, rollback flow, and staging expectations.
+- Latest validation after Alembic/release continuation:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with
+  `117 passed, 1 skipped`; `python3 -m compileall app streamlit_app tests`
+  passed; `docker build -t legal-rag-chatbot:ci .` passed after retrying a
+  transient PyPI download timeout.
 - Tightened runtime preload to `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su-curated-*.txt`
   and renamed the clean corpus files with a `curated` prefix so Docker/demo no
   longer indexes raw OCR or `pdftotext` output by accident.
