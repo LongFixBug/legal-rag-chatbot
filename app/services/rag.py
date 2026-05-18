@@ -55,11 +55,29 @@ class RagService:
                 citations=[],
                 retrieved_chunks=0,
                 history_used=len(history_records),
+                confidence=0.0,
+                abstained=True,
                 validation_warnings=[],
             )
 
         limit = top_k or self.settings.top_k
         retrieved = await self._retrieve(normalized_question, limit, military_question_type=military_question_type)
+        citations_source = self._relevant_military_citations(retrieved, military_question_type)
+        confidence = self._retrieval_confidence(citations_source)
+        if confidence < self.settings.min_retrieval_confidence:
+            answer = self.military_service_law_service.abstain_answer()
+            await self._store_turn(conversation.id, normalized_question, answer)
+            return ChatResponse(
+                conversation_id=conversation.id,
+                answer=answer,
+                citations=[],
+                retrieved_chunks=0,
+                history_used=len(history_records),
+                confidence=confidence,
+                abstained=True,
+                validation_warnings=[],
+            )
+
         answer = self.military_service_law_service.answer_question(
             normalized_question,
             retrieved,
@@ -69,7 +87,6 @@ class RagService:
             history = [record.to_dict() for record in history_records]
             answer = await self.llm_service.answer(normalized_question, retrieved, history)
 
-        citations_source = self._filter_military_citations(retrieved, military_question_type)
         validation_warnings = self.citation_service.validate_answer_citations(answer, retrieved)
         await self._store_turn(conversation.id, normalized_question, answer)
         citations = [self._to_citation_response(item) for item in citations_source]
@@ -79,6 +96,8 @@ class RagService:
             citations=citations,
             retrieved_chunks=len(citations_source),
             history_used=len(history_records),
+            confidence=confidence,
+            abstained=False,
             validation_warnings=validation_warnings,
         )
 
@@ -197,12 +216,23 @@ class RagService:
         return article_refs
 
     def _filter_military_citations(self, retrieved: list[dict], question_type: MilitaryQuestionType) -> list[dict]:
+        filtered = self._relevant_military_citations(retrieved, question_type)
+        return filtered or retrieved
+
+    def _relevant_military_citations(self, retrieved: list[dict], question_type: MilitaryQuestionType) -> list[dict]:
         filtered = [
             item
             for item in retrieved
             if self.military_service_law_service.is_relevant_context(item, question_type)
         ]
-        return filtered or retrieved
+        return filtered
+
+    @staticmethod
+    def _retrieval_confidence(retrieved: list[dict]) -> float:
+        if not retrieved:
+            return 0.0
+        best_score = max(float(item.get("score", 0.0)) for item in retrieved)
+        return round(max(0.0, min(best_score / 5.0, 1.0)), 4)
 
     # ------------------------------------------------------------------ #
     # Re-ranking

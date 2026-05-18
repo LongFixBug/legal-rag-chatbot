@@ -94,3 +94,28 @@ def test_reindex_replaces_preloaded_documents(client):
     assert listed.status_code == 200
     assert len(listed.json()) == 1
     assert "Điều kiện xuất ngũ" in listed.json()[0]["summary"]
+
+
+def test_document_mutation_requires_admin_token_when_configured(client):
+    client.app.state.services.settings.admin_token = "secret-token"
+
+    denied = client.post(
+        "/api/documents/ingest",
+        json={
+            "title": "Luật mẫu",
+            "source": "manual-test",
+            "content": "Luật Mẫu\n\nĐiều 1. Phạm vi điều chỉnh.\n1. Văn bản này dùng để test ingest.",
+        },
+    )
+    assert denied.status_code == 401
+
+    allowed = client.post(
+        "/api/documents/ingest",
+        headers={"X-Admin-Token": "secret-token"},
+        json={
+            "title": "Luật mẫu",
+            "source": "manual-test",
+            "content": "Luật Mẫu\n\nĐiều 1. Phạm vi điều chỉnh.\n1. Văn bản này dùng để test ingest.",
+        },
+    )
+    assert allowed.status_code == 200

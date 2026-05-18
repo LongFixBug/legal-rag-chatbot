@@ -33,13 +33,23 @@ MILITARY_KEYWORDS = (
     "mien nhap ngu",
     "trung tuyen",
     "xuat ngu",
+    "phuc vu tai ngu",
     "dai hoc",
     "cao dang",
     "dang hoc",
     "sinh vien",
     "con mot",
+    "mot con",
+    "du 18 tuoi",
+    "phu nu",
+    "nu",
     "nu co phai",
     "con gai",
+    "anh ruot",
+    "em ruot",
+    "nghien ma tuy",
+    "ma tuy",
+    "mat kem",
     "dan quan thuong truc",
 )
 
@@ -51,26 +61,28 @@ class MilitaryServiceLawService:
         if not is_military:
             return MilitaryQuestionType.non_military
 
-        if any(term in folded for term in ("bao nhieu tuoi", "do tuoi", "tuoi nao", "het bao nhieu tuoi", "27 tuoi", "25 tuoi")):
+        if any(term in folded for term in ("bao nhieu tuoi", "do tuoi", "tuoi nao", "het bao nhieu tuoi", "du 18 tuoi", "18 tuoi", "27 tuoi", "25 tuoi")):
             return MilitaryQuestionType.age
-        if any(term in folded for term in ("bao lau", "may nam", "thoi han", "phuc vu tai ngu", "xuat ngu")):
-            if "xuat ngu" in folded:
-                return MilitaryQuestionType.discharge
-            return MilitaryQuestionType.service_duration
         if any(term in folded for term in ("sinh vien", "dai hoc", "cao dang", "dang hoc", "hoc dai hoc", "hoc cao dang")):
             return MilitaryQuestionType.student_defer
-        if any(term in folded for term in ("nu co phai", "con gai", "cong dan nu", "phu nu")):
+        if any(term in folded for term in ("nu co phai", "con gai", "cong dan nu", "phu nu", "nu co bat buoc")):
             return MilitaryQuestionType.female
-        if any(term in folded for term in ("tam hoan", "duoc hoan", "mien", "lao dong duy nhat", "con liet si", "thuong binh", "con mot", "mot con", "dan quan thuong truc")):
-            return MilitaryQuestionType.defer_exempt
         if any(term in folded for term in ("khong di kham", "tron", "phat", "xu phat", "khong chap hanh")):
             return MilitaryQuestionType.penalty
-        if any(term in folded for term in ("can thi", "loan thi", "vien thi", "mat", "thi luc")):
+        if any(term in folded for term in ("can thi", "loan thi", "vien thi", "mat", "mat kem", "thi luc")):
             return MilitaryQuestionType.eyesight
+        if any(term in folded for term in ("lenh goi", "kham suc khoe", "ngay 1 thang 11", "ngay 01 thang 11", "niem yet", "bao truoc", "thoi gian kham", "ket qua kham")):
+            return MilitaryQuestionType.exam_call
+        if "xuat ngu" in folded:
+            return MilitaryQuestionType.discharge
         if any(term in folded for term in ("suc khoe", "loai 1", "loai 2", "loai 3", "chua du suc khoe")):
             return MilitaryQuestionType.health
-        if any(term in folded for term in ("lenh goi", "kham suc khoe", "ngay 1 thang 11", "niem yet")):
-            return MilitaryQuestionType.exam_call
+        if any(term in folded for term in ("nghien ma tuy", "ma tuy")):
+            return MilitaryQuestionType.health
+        if any(term in folded for term in ("tam hoan", "duoc hoan", "mien", "lao dong duy nhat", "con liet si", "thuong binh", "con mot", "mot con", "anh ruot", "em ruot", "dan quan thuong truc")):
+            return MilitaryQuestionType.defer_exempt
+        if any(term in folded for term in ("bao lau", "may nam", "thoi han", "phuc vu tai ngu")):
+            return MilitaryQuestionType.service_duration
         if any(term in folded for term in ("tieu chuan", "du dieu kien", "dieu kien")):
             return MilitaryQuestionType.standards
         return MilitaryQuestionType.general
@@ -105,22 +117,24 @@ class MilitaryServiceLawService:
         elif question_type == MilitaryQuestionType.defer_exempt:
             lines = [
                 "Tạm hoãn và miễn gọi nhập ngũ là hai nhóm khác nhau.",
-                "Tạm hoãn thường áp dụng cho các trường hợp như chưa đủ sức khỏe, là lao động duy nhất trực tiếp nuôi thân nhân không còn khả năng lao động hoặc chưa đến tuổi lao động, đang học phổ thông/đại học/cao đẳng hệ chính quy trong một khóa đào tạo, hoặc một số trường hợp gia đình/chính sách khác.",
+                "Tạm hoãn thường áp dụng cho các trường hợp như chưa đủ sức khỏe, là lao động duy nhất trực tiếp nuôi thân nhân không còn khả năng lao động hoặc chưa đến tuổi lao động, đang học phổ thông/đại học/cao đẳng hệ chính quy trong một khóa đào tạo, có anh, chị hoặc em ruột đang là hạ sĩ quan, binh sĩ phục vụ tại ngũ, hoặc dân quân thường trực.",
                 "Miễn gọi nhập ngũ áp dụng cho các nhóm như con liệt sĩ, con thương binh hạng một, một anh hoặc một em trai của liệt sĩ, một con của thương binh hạng hai hoặc bệnh binh/người nhiễm chất độc da cam suy giảm khả năng lao động từ 81% trở lên, và một số trường hợp công tác ở vùng đặc biệt khó khăn.",
                 "Theo bản hợp nhất mới sau Luật 98/2025/QH15, thẩm quyền quyết định tạm hoãn hoặc miễn gọi nhập ngũ thuộc Chủ tịch Ủy ban nhân dân cấp tỉnh.",
             ]
-            if "con mot" in self._fold_text(question):
+            if any(term in self._fold_text(question) for term in ("con mot", "mot con")):
                 lines.insert(1, "Chỉ là con một thì không tự động được miễn gọi nhập ngũ; cần xem có thuộc căn cứ tạm hoãn/miễn cụ thể hay không, ví dụ là lao động duy nhất trực tiếp nuôi dưỡng thân nhân đủ điều kiện.")
         elif question_type == MilitaryQuestionType.eyesight:
             lines = [
                 "Về mắt/cận thị, không nên kết luận chỉ dựa vào số độ cận; cần kết luận phân loại sức khỏe của Hội đồng khám sức khỏe.",
                 "Theo Văn bản hợp nhất 88/VBHN-BQP năm 2025: cận dưới -3D được chấm theo thị lực sau chỉnh kính; cận từ -3D đến dưới -4D là điểm 4; từ -4D đến dưới -5D là điểm 5; từ -5D trở lên là điểm 6.",
+                "loạn thị và viễn thị cũng phải đối chiếu bảng điểm khám mắt trong Phụ lục I; không nên suy ra đạt/không đạt nếu chưa có kết luận phân loại sức khỏe.",
                 "Tiêu chuẩn chung để tuyển chọn thực hiện nghĩa vụ quân sự là sức khỏe loại 1, loại 2 hoặc loại 3; vì vậy các mức bị chấm điểm 4, 5, 6 thường là tín hiệu không đạt tiêu chuẩn chung, nhưng kết luận cuối cùng vẫn thuộc Hội đồng khám sức khỏe.",
             ]
         elif question_type == MilitaryQuestionType.health:
             lines = [
                 "Tiêu chuẩn sức khỏe thực hiện nghĩa vụ quân sự hiện hành dựa trên Văn bản hợp nhất 88/VBHN-BQP năm 2025, hợp nhất Thông tư 105/2023/TT-BQP và các sửa đổi mới.",
                 "Tiêu chuẩn chung là đạt sức khỏe loại 1, loại 2 hoặc loại 3 theo quy định phân loại sức khỏe.",
+                "Không gọi nhập ngũ đối với công dân nghiện các chất ma túy theo tiêu chuẩn tuyển chọn sức khỏe hiện hành.",
                 "Nếu chưa đủ sức khỏe phục vụ tại ngũ theo kết luận của Hội đồng khám sức khỏe thì thuộc nhóm có thể được tạm hoãn gọi nhập ngũ.",
             ]
         elif question_type == MilitaryQuestionType.penalty:
@@ -175,6 +189,13 @@ class MilitaryServiceLawService:
             "Bạn có thể hỏi các nội dung như độ tuổi nhập ngũ, tạm hoãn/miễn, khám sức khỏe, cận thị, lệnh gọi, xử phạt hoặc xuất ngũ."
         )
 
+    @staticmethod
+    def abstain_answer() -> str:
+        return (
+            "Chưa tìm thấy căn cứ đủ mạnh trong bộ văn bản đã nạp để trả lời chắc chắn câu hỏi này. "
+            "Bạn có thể thử hỏi cụ thể hơn hoặc reindex/nạp thêm văn bản nghĩa vụ quân sự liên quan."
+        )
+
     def suggested_articles(self, question_type: MilitaryQuestionType) -> set[str]:
         if question_type == MilitaryQuestionType.age:
             return {"Điều 30"}
@@ -212,10 +233,10 @@ class MilitaryServiceLawService:
             MilitaryQuestionType.service_duration: ("24 thang", "phuc vu tai ngu"),
             MilitaryQuestionType.standards: ("tieu chuan", "ly lich ro rang", "suc khoe loai"),
             MilitaryQuestionType.student_defer: ("dang hoc", "cao dang", "dai hoc", "tam hoan"),
-            MilitaryQuestionType.defer_exempt: ("tam hoan", "mien goi", "liet si", "thuong binh"),
-            MilitaryQuestionType.health: ("suc khoe", "hoi dong kham", "loai 1", "loai 2", "loai 3"),
-            MilitaryQuestionType.eyesight: ("can thi", "thi luc", "loan thi", "phu luc i"),
-            MilitaryQuestionType.exam_call: ("lenh goi kham", "15 ngay", "01 thang 11", "20 ngay"),
+            MilitaryQuestionType.defer_exempt: ("tam hoan", "mien goi", "liet si", "thuong binh", "dan quan thuong truc", "phuc vu tai ngu"),
+            MilitaryQuestionType.health: ("suc khoe", "hoi dong kham", "loai 1", "loai 2", "loai 3", "ma tuy", "khong goi nhap ngu"),
+            MilitaryQuestionType.eyesight: ("can thi", "thi luc", "loan thi", "vien thi", "phu luc i", "mat"),
+            MilitaryQuestionType.exam_call: ("lenh goi kham", "15 ngay", "01 thang 11", "31 thang 12", "20 ngay", "niem yet"),
             MilitaryQuestionType.penalty: ("phat tien", "khong co mat", "khong chap hanh", "gian doi"),
             MilitaryQuestionType.female: ("cong dan nu", "tu nguyen", "quan doi co nhu cau"),
             MilitaryQuestionType.discharge: ("xuat ngu", "het thoi han", "khong du suc khoe"),

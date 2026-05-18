@@ -5,6 +5,11 @@ import os
 import httpx
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000/api")
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "")
+
+
+def admin_headers() -> dict[str, str]:
+    return {"X-Admin-Token": ADMIN_TOKEN} if ADMIN_TOKEN else {}
 
 
 def get_documents() -> list[dict]:
@@ -64,6 +69,7 @@ def ingest_document(title: str, content: str) -> dict:
     response = httpx.post(
         f"{API_BASE_URL}/documents/ingest",
         json={"title": title, "content": content, "source": "streamlit"},
+        headers=admin_headers(),
         timeout=60.0,
     )
     response.raise_for_status()
@@ -75,6 +81,7 @@ def upload_document(title: str, filename: str, content: bytes, mime_type: str) -
         f"{API_BASE_URL}/documents/upload",
         data={"title": title},
         files={"file": (filename, content, mime_type)},
+        headers=admin_headers(),
         timeout=60.0,
     )
     response.raise_for_status()
@@ -82,12 +89,12 @@ def upload_document(title: str, filename: str, content: bytes, mime_type: str) -
 
 
 def preload_samples() -> dict:
-    response = httpx.post(f"{API_BASE_URL}/documents/preload", timeout=60.0)
+    response = httpx.post(f"{API_BASE_URL}/documents/preload", headers=admin_headers(), timeout=60.0)
     response.raise_for_status()
     return response.json()
 
 
 def reindex_samples() -> dict:
-    response = httpx.post(f"{API_BASE_URL}/documents/reindex", timeout=120.0)
+    response = httpx.post(f"{API_BASE_URL}/documents/reindex", headers=admin_headers(), timeout=120.0)
     response.raise_for_status()
     return response.json()

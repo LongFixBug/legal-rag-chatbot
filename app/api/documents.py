@@ -1,9 +1,18 @@
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
 
 from app.schemas.document import DocumentIngestRequest, DocumentIngestResponse, DocumentResponse
 from app.services.registry import AppServices, get_services
 
 router = APIRouter(prefix="/documents", tags=["documents"])
+
+
+async def require_admin_token(
+    x_admin_token: str | None = Header(default=None),
+    services: AppServices = Depends(get_services),
+) -> None:
+    expected = services.settings.admin_token.strip()
+    if expected and x_admin_token != expected:
+        raise HTTPException(status_code=401, detail="Admin token required")
 
 
 @router.get("", response_model=list[DocumentResponse])
@@ -15,6 +24,7 @@ async def list_documents(services: AppServices = Depends(get_services)) -> list[
 @router.post("/ingest", response_model=DocumentIngestResponse)
 async def ingest_document(
     request: DocumentIngestRequest,
+    _: None = Depends(require_admin_token),
     services: AppServices = Depends(get_services),
 ) -> DocumentIngestResponse:
     document, chunks = await services.documents.ingest_document(request)
@@ -25,6 +35,7 @@ async def ingest_document(
 async def upload_document(
     title: str = Form(...),
     file: UploadFile = File(...),
+    _: None = Depends(require_admin_token),
     services: AppServices = Depends(get_services),
 ) -> DocumentIngestResponse:
     try:
@@ -39,7 +50,10 @@ async def upload_document(
 
 
 @router.post("/preload")
-async def preload_documents(services: AppServices = Depends(get_services)) -> dict[str, int]:
+async def preload_documents(
+    _: None = Depends(require_admin_token),
+    services: AppServices = Depends(get_services),
+) -> dict[str, int]:
     count = await services.documents.ingest_directory(
         services.settings.data_dir,
         include_pattern=services.settings.preload_include_pattern,
@@ -48,7 +62,10 @@ async def preload_documents(services: AppServices = Depends(get_services)) -> di
 
 
 @router.post("/reindex")
-async def reindex_documents(services: AppServices = Depends(get_services)) -> dict[str, int]:
+async def reindex_documents(
+    _: None = Depends(require_admin_token),
+    services: AppServices = Depends(get_services),
+) -> dict[str, int]:
     deleted, ingested = await services.documents.reindex_directory(
         services.settings.data_dir,
         include_pattern=services.settings.preload_include_pattern,
@@ -57,7 +74,11 @@ async def reindex_documents(services: AppServices = Depends(get_services)) -> di
 
 
 @router.delete("/{document_id}")
-async def delete_document(document_id: str, services: AppServices = Depends(get_services)) -> dict[str, bool]:
+async def delete_document(
+    document_id: str,
+    _: None = Depends(require_admin_token),
+    services: AppServices = Depends(get_services),
+) -> dict[str, bool]:
     deleted = await services.documents.delete_document(document_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Document not found")

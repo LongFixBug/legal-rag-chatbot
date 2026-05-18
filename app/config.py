@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     lexical_weight: float = Field(default=0.35, ge=0.0, le=1.0)
     article_reference_boost: float = Field(default=0.75, ge=0.0)
     title_match_boost: float = Field(default=0.2, ge=0.0)
+    min_retrieval_confidence: float = Field(default=0.2, ge=0.0, le=1.0)
+    admin_token: str = ""
 
     database_url: str = ""
     qdrant_url: str = ""

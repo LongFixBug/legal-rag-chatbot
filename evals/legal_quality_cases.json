@@ -4,7 +4,9 @@
       "id": "military_service_age",
       "group": "military.age",
       "question": "bao nhiêu tuổi thì phải đi nghĩa vụ quân sự",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 80",
@@ -16,7 +18,9 @@
       "id": "military_service_deferment",
       "group": "military.deferment",
       "question": "đang học đại học có được tạm hoãn nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 80",
@@ -28,7 +32,9 @@
       "id": "military_deferment_authority_2025",
       "group": "military.deferment",
       "question": "ai có thẩm quyền quyết định tạm hoãn nghĩa vụ quân sự",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 80",
@@ -40,7 +46,9 @@
       "id": "military_service_myopia",
       "group": "military.health",
       "question": "cận thị 4 độ có phải đi nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 88",
@@ -51,7 +59,9 @@
       "id": "military_health_general_standard",
       "group": "military.health",
       "question": "sức khỏe loại mấy thì được gọi nhập ngũ",
-      "seed_files": ["nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 88",
@@ -63,7 +73,9 @@
       "id": "military_exam_penalty",
       "group": "military.penalty",
       "question": "không đi khám sức khỏe nghĩa vụ quân sự bị phạt bao nhiêu",
-      "seed_files": ["nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 04",
@@ -75,7 +87,9 @@
       "id": "military_female_service",
       "group": "military.gender",
       "question": "con gái có phải đi nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 80",
@@ -87,7 +101,9 @@
       "id": "military_discharge",
       "group": "military.discharge",
       "question": "khi nào được xuất ngũ",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 80",
@@ -99,7 +115,9 @@
       "id": "military_only_child_deferment",
       "group": "military.deferment",
       "question": "con một có được miễn nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
       "top_k": 5,
       "expected_any": {
         "title_contains": "Văn bản hợp nhất 80",
@@ -113,81 +131,944 @@
       "id": "military_age_answer",
       "group": "military.age",
       "question": "bao nhiêu tuổi thì phải đi nghĩa vụ quân sự",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["đủ 18 tuổi", "hết 25 tuổi", "hết 27 tuổi", "Điều 30"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "đủ 18 tuổi",
+        "hết 25 tuổi",
+        "hết 27 tuổi",
+        "Điều 30"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_student_deferment_answer",
       "group": "military.deferment",
       "question": "đang học đại học có được tạm hoãn nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["tạm hoãn", "một khóa đào tạo", "hết 27 tuổi", "Điều 41"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "tạm hoãn",
+        "một khóa đào tạo",
+        "hết 27 tuổi",
+        "Điều 41"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_deferment_authority_answer",
       "group": "military.deferment",
       "question": "ai có thẩm quyền quyết định tạm hoãn nghĩa vụ quân sự",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["Chủ tịch Ủy ban nhân dân cấp tỉnh", "Điều 42"],
-      "must_not_include": ["cấp huyện", "Chưa có căn cứ"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Chủ tịch Ủy ban nhân dân cấp tỉnh",
+        "Điều 42"
+      ],
+      "must_not_include": [
+        "cấp huyện",
+        "Chưa có căn cứ"
+      ]
     },
     {
       "id": "military_myopia_answer",
       "group": "military.health",
       "question": "cận thị 4 độ có phải đi nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"],
-      "must_include": ["không nên kết luận chỉ dựa vào số độ cận", "từ -4D đến dưới -5D", "điểm 5"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "không nên kết luận chỉ dựa vào số độ cận",
+        "từ -4D đến dưới -5D",
+        "điểm 5"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_health_standard_answer",
       "group": "military.health",
       "question": "sức khỏe loại mấy thì được gọi nhập ngũ",
-      "seed_files": ["nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"],
-      "must_include": ["loại 1", "loại 2", "loại 3"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "loại 1",
+        "loại 2",
+        "loại 3"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_exam_penalty_answer",
       "group": "military.penalty",
       "question": "không đi khám sức khỏe nghĩa vụ quân sự bị phạt bao nhiêu",
-      "seed_files": ["nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"],
-      "must_include": ["10 đến 12 triệu đồng", "25 đến 35 triệu đồng", "Điều 6"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"
+      ],
+      "must_include": [
+        "10 đến 12 triệu đồng",
+        "25 đến 35 triệu đồng",
+        "Điều 6"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_female_service_answer",
       "group": "military.gender",
       "question": "con gái có phải đi nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["Công dân nữ", "tự nguyện", "Quân đội có nhu cầu"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Công dân nữ",
+        "tự nguyện",
+        "Quân đội có nhu cầu"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_discharge_answer",
       "group": "military.discharge",
       "question": "khi nào được xuất ngũ",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["hết thời hạn phục vụ tại ngũ", "Điều 21", "Điều 43"],
-      "must_not_include": ["Chưa có căn cứ", "Dựa trên các văn bản đã nạp"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "hết thời hạn phục vụ tại ngũ",
+        "Điều 21",
+        "Điều 43"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
     },
     {
       "id": "military_only_child_deferment_answer",
       "group": "military.deferment",
       "question": "con một có được miễn nghĩa vụ quân sự không",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["không tự động được miễn", "lao động duy nhất"],
-      "must_not_include": ["đương nhiên được miễn", "Chưa có căn cứ"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "không tự động được miễn",
+        "lao động duy nhất"
+      ],
+      "must_not_include": [
+        "đương nhiên được miễn",
+        "Chưa có căn cứ"
+      ]
     },
     {
       "id": "military_out_of_scope_answer",
       "group": "military.scope",
       "question": "trúng số 2 tỷ thì đóng thuế bao nhiêu",
-      "seed_files": ["nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"],
-      "must_include": ["chỉ hỗ trợ", "nghĩa vụ quân sự"],
-      "must_not_include": ["199.000.000 đồng", "thuế"]
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chỉ hỗ trợ",
+        "nghĩa vụ quân sự"
+      ],
+      "must_not_include": [
+        "199.000.000 đồng",
+        "thuế"
+      ]
+    },
+    {
+      "id": "age_18_when_called",
+      "group": "military.age",
+      "question": "đủ 18 tuổi thì có phải đi nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "đủ 18 tuổi",
+        "hết 25 tuổi"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "age_25_limit",
+      "group": "military.age",
+      "question": "độ tuổi gọi nhập ngũ đến hết bao nhiêu tuổi",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "hết 25 tuổi",
+        "hết 27 tuổi"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "age_college_27",
+      "group": "military.age",
+      "question": "học đại học được hoãn thì bao nhiêu tuổi hết gọi nhập ngũ",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "hết 27 tuổi",
+        "tạm hoãn"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "age_general_plain",
+      "group": "military.age",
+      "question": "bao nhiêu tuổi thì bị gọi nhập ngũ",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "đủ 18 tuổi",
+        "hết 25 tuổi"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "age_27_question",
+      "group": "military.age",
+      "question": "27 tuổi còn bị gọi nhập ngũ không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "hết 27 tuổi"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "duration_24_months",
+      "group": "military.duration",
+      "question": "đi nghĩa vụ quân sự bao lâu",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "24 tháng"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "duration_military_years",
+      "group": "military.duration",
+      "question": "phục vụ tại ngũ mấy năm",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "24 tháng"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "duration_extension",
+      "group": "military.duration",
+      "question": "thời hạn phục vụ tại ngũ có thể kéo dài không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "24 tháng",
+        "kéo dài"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "student_regular_university",
+      "group": "military.deferment",
+      "question": "sinh viên đại học chính quy có được tạm hoãn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "tạm hoãn",
+        "một khóa đào tạo"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "student_college_regular",
+      "group": "military.deferment",
+      "question": "đang học cao đẳng chính quy có được hoãn nhập ngũ không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "tạm hoãn",
+        "một khóa đào tạo"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "student_after_graduation",
+      "group": "military.deferment",
+      "question": "học xong đại học rồi còn được tạm hoãn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "không còn lý do tạm hoãn",
+        "gọi nhập ngũ"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "student_one_course",
+      "group": "military.deferment",
+      "question": "tạm hoãn vì đại học được mấy khóa đào tạo",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "một khóa đào tạo"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "defer_worker_only",
+      "group": "military.deferment",
+      "question": "lao động duy nhất nuôi gia đình có được tạm hoãn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Tạm hoãn",
+        "lao động duy nhất"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "defer_health_not_enough",
+      "group": "military.deferment",
+      "question": "chưa đủ sức khỏe có được tạm hoãn nhập ngũ không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chưa đủ sức khỏe",
+        "tạm hoãn"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "defer_sibling_active",
+      "group": "military.deferment",
+      "question": "có anh ruột đang phục vụ tại ngũ thì có được tạm hoãn không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Tạm hoãn",
+        "anh, chị hoặc em ruột"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "defer_dan_quan",
+      "group": "military.deferment",
+      "question": "dân quân thường trực có được tạm hoãn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Tạm hoãn",
+        "dân quân thường trực"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "exempt_martyr_child",
+      "group": "military.deferment",
+      "question": "con liệt sĩ có được miễn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Miễn gọi nhập ngũ",
+        "con liệt sĩ"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "exempt_wounded_soldier_child",
+      "group": "military.deferment",
+      "question": "con thương binh hạng một có được miễn gọi nhập ngũ không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Miễn gọi nhập ngũ",
+        "con thương binh hạng một"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "exempt_authority",
+      "group": "military.deferment",
+      "question": "thẩm quyền miễn gọi nhập ngũ thuộc ai",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Chủ tịch Ủy ban nhân dân cấp tỉnh"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "only_child_not_auto",
+      "group": "military.deferment",
+      "question": "nhà chỉ có một con trai có được miễn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "không tự động được miễn",
+        "lao động duy nhất"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "standards_main",
+      "group": "military.standards",
+      "question": "tiêu chuẩn để được gọi nhập ngũ gồm những gì",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "lý lịch rõ ràng",
+        "đủ sức khỏe"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "standards_condition",
+      "group": "military.standards",
+      "question": "đủ điều kiện nào thì được gọi nhập ngũ",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "lý lịch rõ ràng",
+        "trình độ văn hóa"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "health_type",
+      "group": "military.health",
+      "question": "sức khỏe loại mấy thì đạt nghĩa vụ quân sự",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "loại 1",
+        "loại 2",
+        "loại 3"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "health_not_enough",
+      "group": "military.health",
+      "question": "chưa đủ sức khỏe thì xử lý nghĩa vụ quân sự thế nào",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "chưa đủ sức khỏe",
+        "tạm hoãn"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "health_drug",
+      "group": "military.health",
+      "question": "nghiện ma túy có được gọi nhập ngũ không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "Không gọi nhập ngũ",
+        "ma túy"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "health_council",
+      "group": "military.health",
+      "question": "ai kết luận sức khỏe nghĩa vụ quân sự",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "Hội đồng khám sức khỏe"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "eyesight_3d",
+      "group": "military.health",
+      "question": "cận thị 3 độ có phải đi nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "từ -3D đến dưới -4D",
+        "điểm 4"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "eyesight_4d",
+      "group": "military.health",
+      "question": "cận thị 4 độ có đi nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "từ -4D đến dưới -5D",
+        "điểm 5"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "eyesight_5d",
+      "group": "military.health",
+      "question": "cận thị 5 độ có đạt nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "từ -5D trở lên",
+        "điểm 6"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "eyesight_loạn",
+      "group": "military.health",
+      "question": "loạn thị có ảnh hưởng nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "loạn thị",
+        "Hội đồng khám sức khỏe"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "eyesight_not_conclude",
+      "group": "military.health",
+      "question": "mắt kém thì có chắc được miễn nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-suc-khoe-hop-nhat-88-2025.txt"
+      ],
+      "must_include": [
+        "không nên kết luận",
+        "Hội đồng khám sức khỏe"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "exam_notice_15_days",
+      "group": "military.exam",
+      "question": "lệnh gọi khám sức khỏe phải báo trước bao nhiêu ngày",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "15 ngày"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "exam_period",
+      "group": "military.exam",
+      "question": "thời gian khám sức khỏe nghĩa vụ quân sự hằng năm là khi nào",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "01/11",
+        "31/12"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "exam_public_result",
+      "group": "military.exam",
+      "question": "kết quả khám sức khỏe nghĩa vụ quân sự niêm yết bao lâu",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "20 ngày"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "penalty_no_show_exam",
+      "group": "military.penalty",
+      "question": "không đi khám nghĩa vụ quân sự bị phạt bao nhiêu",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"
+      ],
+      "must_include": [
+        "10 đến 12 triệu đồng",
+        "25 đến 35 triệu đồng"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "penalty_refuse_order",
+      "group": "military.penalty",
+      "question": "cố ý không nhận lệnh khám nghĩa vụ quân sự bị phạt bao nhiêu",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"
+      ],
+      "must_include": [
+        "12 đến 15 triệu đồng"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "penalty_fake_health",
+      "group": "military.penalty",
+      "question": "gian dối kết quả khám sức khỏe nghĩa vụ quân sự bị phạt không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"
+      ],
+      "must_include": [
+        "15 đến 20 triệu đồng"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "penalty_valid_reason",
+      "group": "military.penalty",
+      "question": "không đi khám nghĩa vụ quân sự có lý do chính đáng thì sao",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-xu-phat-hop-nhat-04-2022.txt"
+      ],
+      "must_include": [
+        "lý do chính đáng"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "female_required",
+      "group": "military.gender",
+      "question": "nữ có bắt buộc đi nghĩa vụ quân sự không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Công dân nữ",
+        "tự nguyện"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "female_volunteer",
+      "group": "military.gender",
+      "question": "con gái muốn tự nguyện đi nghĩa vụ quân sự được không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "tự nguyện",
+        "Quân đội có nhu cầu"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "female_need",
+      "group": "military.gender",
+      "question": "phụ nữ có được phục vụ tại ngũ không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Công dân nữ",
+        "Quân đội có nhu cầu"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "discharge_after_term",
+      "group": "military.discharge",
+      "question": "hết thời hạn phục vụ thì khi nào được xuất ngũ",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "hết thời hạn phục vụ tại ngũ",
+        "Điều 21"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "discharge_health",
+      "group": "military.discharge",
+      "question": "không đủ sức khỏe khi đang tại ngũ có được xuất ngũ sớm không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "không đủ sức khỏe",
+        "Điều 41"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "discharge_condition",
+      "group": "military.discharge",
+      "question": "điều kiện xuất ngũ nghĩa vụ quân sự là gì",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "Điều 21",
+        "Điều 43"
+      ],
+      "must_not_include": [
+        "Chưa có căn cứ",
+        "Dựa trên các văn bản đã nạp"
+      ]
+    },
+    {
+      "id": "out_of_scope_labor",
+      "group": "military.scope",
+      "question": "hợp đồng lao động là gì",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chỉ hỗ trợ",
+        "nghĩa vụ quân sự"
+      ],
+      "must_not_include": [
+        "199.000.000 đồng",
+        "đủ 18 tuổi"
+      ]
+    },
+    {
+      "id": "out_of_scope_tax",
+      "group": "military.scope",
+      "question": "đóng thuế thu nhập cá nhân thế nào",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chỉ hỗ trợ",
+        "nghĩa vụ quân sự"
+      ],
+      "must_not_include": [
+        "199.000.000 đồng",
+        "đủ 18 tuổi"
+      ]
+    },
+    {
+      "id": "out_of_scope_business",
+      "group": "military.scope",
+      "question": "mở công ty cần điều kiện gì",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chỉ hỗ trợ",
+        "nghĩa vụ quân sự"
+      ],
+      "must_not_include": [
+        "199.000.000 đồng",
+        "đủ 18 tuổi"
+      ]
+    },
+    {
+      "id": "out_of_scope_land",
+      "group": "military.scope",
+      "question": "sổ đỏ sang tên mất bao lâu",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chỉ hỗ trợ",
+        "nghĩa vụ quân sự"
+      ],
+      "must_not_include": [
+        "199.000.000 đồng",
+        "đủ 18 tuổi"
+      ]
+    },
+    {
+      "id": "out_of_scope_inheritance",
+      "group": "military.scope",
+      "question": "thừa kế nhà có phải đóng thuế không",
+      "seed_files": [
+        "nghia-vu-quan-su-curated-luat-hop-nhat-80-2025.txt"
+      ],
+      "must_include": [
+        "chỉ hỗ trợ",
+        "nghĩa vụ quân sự"
+      ],
+      "must_not_include": [
+        "199.000.000 đồng",
+        "đủ 18 tuổi"
+      ]
     }
   ],
   "calculation": []

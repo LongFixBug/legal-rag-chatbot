@@ -44,6 +44,8 @@ services:
       STORAGE_DIR: /app/.storage
       PRELOAD_SAMPLE_DATA: "true"
       EMBEDDING_DIMENSION: "1024"
+      MIN_RETRIEVAL_CONFIDENCE: "0.2"
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
       DATABASE_URL: postgresql+asyncpg://raguser:ragpass@postgres:5432/ragdb
       QDRANT_URL: http://qdrant:6333
       QDRANT_COLLECTION: legal_chunks_qwen3
@@ -67,6 +69,7 @@ services:
     command: ["uv", "run", "streamlit", "run", "streamlit_app/Home.py", "--server.address=0.0.0.0", "--server.port=8501"]
     environment:
       API_BASE_URL: http://api:8000/api
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
     ports:
       - "8501:8501"
 

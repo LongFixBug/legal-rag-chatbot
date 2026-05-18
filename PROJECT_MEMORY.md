@@ -218,6 +218,21 @@ Live Docker flow was also verified for:
   noisy chunks into the RAG index.
 - Narrowed the default legal quality eval suite to military-service-law cases
   so it matches the current focused demo scope and the remaining data corpus.
+- Added confidence/abstain behavior to the chat response so the app refuses
+  weakly grounded answers instead of confidently answering from poor retrieval.
+- Added optional `ADMIN_TOKEN` protection for mutating document endpoints:
+  ingest, upload, preload, reindex, and delete.
+- Expanded the focused military-service-law eval suite to cover common demo
+  questions across age, duration, student deferment, deferment/exemption,
+  health/eyesight, exam summons, penalties, female service, discharge, and
+  out-of-scope handling.
+- Polished the Streamlit chat demo with military-service sample questions and
+  debug-only confidence/abstain metadata.
+- Added a GitHub Actions Docker image build job alongside the pytest job.
+- Latest validation after confidence/admin/eval/UI/CI hardening:
+  `env UV_CACHE_DIR=.uv-cache uv run pytest -q` passed with
+  `107 passed, 1 skipped`; `python3 -m compileall app streamlit_app tests`
+  passed; `docker build -t legal-rag-chatbot:ci .` passed.
 - Tightened runtime preload to `PRELOAD_INCLUDE_PATTERN=nghia-vu-quan-su-curated-*.txt`
   and renamed the clean corpus files with a `curated` prefix so Docker/demo no
   longer indexes raw OCR or `pdftotext` output by accident.

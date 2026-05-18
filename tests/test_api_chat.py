@@ -10,6 +10,8 @@ def test_chat_returns_military_answer_with_citations(client):
     assert payload["retrieved_chunks"] >= 1
     assert payload["citations"]
     assert payload["history_used"] == 0
+    assert payload["abstained"] is False
+    assert payload["confidence"] > 0.0
     assert "đủ 18 tuổi" in payload["answer"]
     assert "Điều 30" in payload["answer"]
 
@@ -25,6 +27,43 @@ def test_chat_refuses_out_of_scope_question(client):
     assert payload["citations"] == []
     assert "chỉ hỗ trợ" in payload["answer"]
     assert "nghĩa vụ quân sự" in payload["answer"]
+    assert payload["abstained"] is True
+    assert payload["confidence"] == 0.0
+
+
+def test_chat_abstains_when_no_military_evidence_is_indexed(client):
+    response = client.post("/api/chat/query", json={"question": "cận thị 4 độ có đi nghĩa vụ quân sự không?"})
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["abstained"] is True
+    assert payload["retrieved_chunks"] == 0
+    assert payload["citations"] == []
+    assert "Chưa tìm thấy căn cứ đủ mạnh" in payload["answer"]
+    assert payload["confidence"] == 0.0
+
+
+def test_chat_abstains_when_retrieved_context_is_not_relevant_enough(client):
+    client.post(
+        "/api/documents/ingest",
+        json={
+            "title": "Văn bản hợp nhất 04/VBHN-BQP về xử phạt nghĩa vụ quân sự",
+            "source": "penalty-only",
+            "content": (
+                "Văn bản hợp nhất 04/VBHN-BQP về xử phạt nghĩa vụ quân sự\n\n"
+                "Điều 6. Vi phạm quy định về kiểm tra, khám sức khỏe thực hiện nghĩa vụ quân sự.\n"
+                "Không chấp hành lệnh gọi kiểm tra, khám sức khỏe có thể bị xử phạt."
+            ),
+        },
+    )
+
+    response = client.post("/api/chat/query", json={"question": "con gái có phải đi nghĩa vụ quân sự không?"})
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["abstained"] is True
+    assert payload["citations"] == []
+    assert "Chưa tìm thấy căn cứ đủ mạnh" in payload["answer"]
 
 
 def test_chat_uses_history_with_same_conversation(client):

@@ -25,6 +25,8 @@ class ChatResponse(BaseModel):
     citations: list[CitationResponse]
     retrieved_chunks: int
     history_used: int = 0
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    abstained: bool = False
     validation_warnings: list[str] = Field(default_factory=list)
 
 
